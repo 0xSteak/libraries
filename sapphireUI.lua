@@ -1275,7 +1275,7 @@ lib.new = function(config)
 				return addButton
 			end
 
-			addSection.addToggle = function(toggleName, toggleCallback, initState, disabled)
+			addSection.addToggle = function(toggleName, initState, toggleCallback, disabled)
 				local addToggle = {}
 
 				local stateBool = initState or false
