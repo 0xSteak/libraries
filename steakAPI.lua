@@ -12,8 +12,8 @@
 
 local reload = false
 
-if not pcall(getgenv) then warn("getgenv is required, use krnl/synapse") return end
-if not pcall(setreadonly, {}, false) then warn("setreadonly is required, use krnl/synapse") return end
+if not pcall(getgenv) then warn("getgenv is required, use krnl/synapse") return 0 end
+if not pcall(setreadonly, {}, false) then warn("setreadonly is required, use krnl/synapse") return 0 end
 if getgenv().steakloaded then reload = true end
 
 Steak = {
@@ -405,6 +405,10 @@ Steak.vcheck = function(global)
 	else
 		return false
 	end
+end
+
+Steak.UI = function()
+	return loadstring(game:HttpGet("https://raw.githubusercontent.com/0xSteak/libraries/main/sapphireUI.lua"))()
 end
 
 if Steak.studio then
