@@ -282,7 +282,7 @@ end
 
 Steak.distance = function(a, b)
 	if b == nil then
-		local distance = (Steak.hrp().Position - a.Position).Magnitude
+		local distance = (Steak.hrp().Position - (a.Position or a)).Magnitude
 		return distance
 	else
 		local distance = (a.Position - b.Position).Magnitude

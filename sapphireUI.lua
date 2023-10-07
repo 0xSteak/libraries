@@ -783,10 +783,10 @@ lib.new = function(config)
 			gui.Enabled = true
 		end
 	end
-	gui.Parent = config.Parent or game.CoreGui
-	topIcon.Image = config.Icon or ""
+	gui.Parent = config.parent or game.CoreGui
+	topIcon.Image = config.icon or ""
 	topIcon.ImageColor3 = lib.settings.uiColor
-	topTitle.Text = config.Name
+	topTitle.Text = config.name
 
 	tContainer.ListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 		tContainer.CanvasSize = UDim2.new(0, 0, 0, tContainer.ListLayout.AbsoluteContentSize.Y)
@@ -1503,10 +1503,11 @@ lib.new = function(config)
 				return addTextField
 			end
 
-			addSection.addSlider = function(sliderName, min, max, initVal, decimals, sliderCallback)
+			addSection.addSlider = function(sliderName, min, max, initVal, decimals, suffix, sliderCallback)
 				local addSlider = {}
 
 				decimals = decimals or 0
+				suffix = suffix or ""
 				sliderCallback = sliderCallback
 
 				local SliderMain = elementCreate.slider()
@@ -1551,7 +1552,7 @@ lib.new = function(config)
 						local Percentage = Position.X.Scale
 						local SliderValue = round(Percentage * (max - min) + min, decimals)
 						GlobalSliderValue = SliderValue
-						SliderMain.SliderValue.Text = tostring(SliderValue)
+						SliderMain.SliderValue.Text = tostring(SliderValue)..suffix
 					end
 				end)
 
@@ -1572,7 +1573,7 @@ lib.new = function(config)
 							t:Play()
 							local Percentage = Position.X.Scale
 							local SliderValue = round(Percentage * (max - min) + min, decimals)
-							SliderMain.SliderValue.Text = tostring(SliderValue)
+							SliderMain.SliderValue.Text = tostring(SliderValue)..suffix
 							GlobalSliderValue = SliderValue
 						end
 					end
@@ -1583,7 +1584,7 @@ lib.new = function(config)
 					local percent = (value - min) / (max - min)
 					GlobalSliderValue = value
 					Slider.Size = UDim2.new(math.clamp(percent, 0, 1), 0, 0, 6)
-					SliderMain.SliderValue.Text = tostring(round(value, decimals))
+					SliderMain.SliderValue.Text = tostring(round(value, decimals))..suffix
 					if call then
 						sliderCallback(GlobalSliderValue)
 					end
