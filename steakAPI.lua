@@ -254,7 +254,7 @@ end
 
 Steak.move = function(arg)
 	if typeof(arg) == 'Instance' then
-		Steak.hmnd():MoveTo(arg)
+		Steak.hmnd():MoveTo(arg.Position)
 	elseif typeof(arg) == 'Vector3' then
 		if #Steak.searchByProp(Steak.Folder, "Material", Enum.Material.Glass) < 1 then
 			local part = Steak.Instance("Part", {
