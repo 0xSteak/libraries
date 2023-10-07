@@ -777,7 +777,7 @@ lib.new = function(config)
 	setTheme(lib.settings.theme)
 
 	gui.Name = randomString(30)
-	if not lib.settings.showAtStart then
+	if config.settings.showAtStart == false then
 		gui.Enabled = false
 		libNew.show = function()
 			gui.Enabled = true
