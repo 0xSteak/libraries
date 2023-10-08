@@ -627,6 +627,20 @@ elementCreate.dropdownOption = function()
 		TextSize = 12
 	})
 end
+elementCreate.line = function()
+	return create("Frame", {
+		Name = "Line",
+		BackgroundTransparency = 1,
+		Size = UDim2.new(0, 170, 0, 20),
+		create("Frame", {
+			Name = "Line",
+			BackgroundColor3 = lib.settings.theme == 0 and Color3.fromRGB(50, 50, 50) or Color3.fromRGB(175, 175, 175),
+			BorderSizePixel = 0,
+			Position = UDim2.new(0, 10, 0, 10),
+			Size = UDim2.new(0, 150, 0, 1),
+		})
+	})
+end
 
 --[[
 config example:
@@ -1760,6 +1774,11 @@ lib.new = function(config)
 				end
 				
 				return addDropdown
+			end
+
+			addSection.addLine = function()
+				local line = elementCreate.line()
+				line.Parent = sectionContainer
 			end
 
 			return addSection
