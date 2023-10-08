@@ -94,13 +94,43 @@ string.time = function(timenum)
 	local seconds = math.floor(timenum - days * 86400 - hours * 3600 - minutes * 60)
 	local str = ""
 	if days > 0 then
-		str = tostring(days)..":"..tostring(hours)..":"..tostring(minutes)..":"..tostring(seconds)
-	elseif days < 1 and hours > 0 then
-		str = tostring(hours)..":"..tostring(minutes)..":"..tostring(seconds)
-	elseif days < 1 and hours < 1 and minutes > 0 then
-		str = tostring(minutes)..":"..tostring(seconds)
-	elseif days < 1 and hours < 1 and minutes < 1 then
-		str = tostring(seconds).."s"
+		str = days..":"
+
+		if hours <= 9 then
+			str = str.."0"
+		end
+		str = str..hours..":"
+
+		if minutes <= 9 then
+			str = str.."0"
+		end
+		str = str..minutes..":"
+
+		if seconds <= 9 then
+			str = str.."0"
+		end
+		str = str..seconds
+	elseif days <= 0 and hours > 0 then
+		str = hours..":"
+
+		if minutes <= 9 then
+			str = str.."0"
+		end
+		str = str..minutes..":"
+
+		if seconds <= 9 then
+			str = str.."0"
+		end
+		str = str..seconds
+	elseif days <= 0 and hours <= 0 and minutes > 0 then	
+		str = minutes..":"
+
+		if seconds <= 9 then
+			str = str.."0"
+		end
+		str = str..seconds
+	elseif days <= 0 and hours <= 0 and minutes <= 0 then
+		return seconds.."s"
 	end
 	return str
 end
@@ -410,6 +440,9 @@ end
 Steak.UI = function()
 	return loadstring(game:HttpGet("https://raw.githubusercontent.com/0xSteak/libraries/main/sapphireUI.lua"))()
 end
+
+setreadonly(Instance, true)
+setreadonly(string, true)
 
 if Steak.studio then
 	if Steak.reload then
