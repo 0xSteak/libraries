@@ -339,40 +339,25 @@ Steak.round = function(num, numDecimalPlaces)
 	return math.floor(num * mult + 0.5) / mult
 end
 
-local floatpart
-
-if Steak.floatpart == nil then
-	floatpart = Instance.new("Part", Steak.ws())
-	floatpart.CanCollide = false
-	floatpart.Anchored = true
-	floatpart.Transparency = 1
-	floatpart.Name = Steak.randomString(15, true, true, false, true, true)
-	floatpart.Material = Enum.Material.Sand
-	Steak.floatpart = floatpart
-else
-	floatpart = Steak.floatpart
-end
-
 Steak.float = function()
-	if #Steak.searchByProp(Steak.Folder, "Material", Enum.Material.Sand) < 1 then
-		Steak.floatpart = Steak.Instance("Part", {
+	if not Steak.ws():FindFirstChild("_FLOATPART") then
+		Instance.cr("Part", {
 			CanCollide = false,
 			Anchored = true,
 			Transparency = 1,
-			Name = Steak.randomString(15, true, true, false, true, true),
-			Material = Enum.Material.Sand
+			Name = "_FLOATPART",
+			Parent = Steak.ws()
 		})
-	else
-		Steak.floatpart = Steak.searchByProp(Steak.Folder, "Material", Enum.Material.Sand)[1]
 	end
 	local floatfunc = {}
+	local floatpart = Steak.ws()._FLOATPART
 	local pos = CFrame.new(Steak.hrp().Position.X, Steak.hrp().Position.Y - 3.75, Steak.hrp().Position.Z)
 	Steak.hmnd().HumanoidDescription.BodyTypeScale = 0
-	Steak.floatpart.CFrame = pos
-	Steak.floatpart.CanCollide = true
+	floatpart.CFrame = pos
+	floatpart.CanCollide = true
 	function floatfunc:Refresh()
 		pos = CFrame.new(Steak.hrp().Position.X, Steak.hrp().Position.Y - 3.75, Steak.hrp().Position.Z)
-		Steak.floatpart.CFrame = pos
+		floatpart.CFrame = pos
 	end
 	function floatfunc:Disable()
 		floatpart.CanCollide = false
