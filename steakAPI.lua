@@ -279,6 +279,10 @@ Steak.tp = function(x, y, z)
 		Steak.hrp().CFrame = CFrame.new(x, y, z)
 	elseif typeof(x) == 'Instance' and Steak.hasProp(x, "Position") then
 		Steak.hrp().CFrame = CFrame.new(x.Position.X, x.Position.Y, x.Position.Z)
+	elseif typeof(x) == "Vector3" then
+		Steak.hrp().CFrame = CFrame.new(x)
+	elseif typeof(x) == "CFrame" then
+		Steak.hrp().CFrame = x
 	end
 end
 
