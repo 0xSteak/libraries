@@ -1442,7 +1442,7 @@ lib.new = function(config)
 							toggle.Toggle.Circle.BackgroundTransparency = 0
 						end
 					elseif prop == 3 then
-						stateBool = not stateBool
+						stateBool = val
 						setState(stateBool)
 						toggleCallback(stateBool)
 					end
