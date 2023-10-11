@@ -661,19 +661,19 @@ lib.new = function(config)
 	local libNew = {}
 	
 	if config.settings then
-		if config.settings.dontEnterTextFields then
+		if config.settings.dontEnterTextFields ~= nil then
 			lib.settings.dontEnterTextFields = config.settings.dontEnterTextFields
 		end
-		if config.settings.showAtStart then
+		if config.settings.showAtStart ~= nil then
 			lib.settings.showAtStart = config.settings.showAtStart
 		end
-		if config.settings.keybinds then
+		if config.settings.keybinds ~= nil then
 			lib.settings.keybinds = config.settings.keybinds
 		end
-		if config.settings.uiColor then
+		if config.settings.uiColor ~= nil then
 			lib.settings.uiColor = config.settings.uiColor
 		end
-		if config.settings.theme then
+		if config.settings.theme ~= nil then
 			lib.settings.theme = config.settings.theme
 		end
 	end
