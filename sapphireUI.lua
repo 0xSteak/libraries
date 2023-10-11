@@ -1788,7 +1788,7 @@ lib.new = function(config)
 					if multiSelect then
 						table.clear(selected)
 						for i, option in pairs(DropdownContainer:GetChildren()) do
-							if option:IsA("TextButton") then
+							if option:IsA("TextButton") and table.find(val, option.Text) then
 								option.TextColor3 = lib.settings.uiColor
 								insert_colorable(option, 1)
 								table.insert(selected, option.Text)
