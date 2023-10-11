@@ -1646,6 +1646,8 @@ lib.new = function(config)
 			
 			addSection.addDropdown = function(dropdownName, options, initVal, multiSelect, dropdownCallback)
 				local addDropdown = {}
+
+				local currentVal = initVal or nil
 				
 				local Dropdown = elementCreate.dropdown()
 				local DropdownContainer = Dropdown.Container.Container
@@ -1766,11 +1768,39 @@ lib.new = function(config)
 								dropdownCallback(selected)
 							end
 						else
+							currentVal = v
 							Dropdown.Toggle.Value.Text = v
 							dropdownCallback(v)
 							close()
 						end
 					end)
+				end
+
+				addDropdown.get = function()
+					if multiSelect then
+						return selected
+					else
+						return currentVal
+					end
+				end
+
+				addDropdown.set = function(val)
+					if multiSelect then
+						table.clear(selected)
+						for i, option in pairs(DropdownContainer:GetChildren()) do
+							if option:IsA("TextButton") then
+								option.TextColor3 = lib.settings.uiColor
+								insert_colorable(option, 1)
+								table.insert(selected, option.Text)
+								Dropdown.Toggle.Value.Text = "Selected ("..#selected..")"
+							end
+						end
+						dropdownCallback(selected)
+					else
+						currentVal = val
+						Dropdown.Toggle.Value.Text = val
+						dropdownCallback(val)
+					end
 				end
 				
 				return addDropdown
