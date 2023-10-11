@@ -660,11 +660,13 @@ config example:
 lib.new = function(config)
 	local libNew = {}
 
+        print(config.settings.showAtStart)
 	lib.settings.dontEnterTextFields = config.settings and config.settings.dontEnterTextFields or lib.settings.dontEnterTextFields
 	lib.settings.showAtStart = config.settings and config.settings.showAtStart or lib.settings.showAtStart
 	lib.settings.keybinds = config.settings and config.settings.keybinds or lib.settings.keybinds
 	lib.settings.uiColor = config.settings and config.settings.uiColor or lib.settings.uiColor
 	lib.settings.theme = config.settings and config.settings.theme or lib.settings.theme
+        print(lib.settings.showAtStart)
 
 	local function insert_colorable(obj, prop)
 		lib.colorable[obj] = prop
@@ -791,7 +793,7 @@ lib.new = function(config)
 	setTheme(lib.settings.theme)
 
 	gui.Name = randomString(30)
-	if lib.settings.showAtStart == false then
+	if not lib.settings.showAtStart then
 		gui.Enabled = false
 		libNew.show = function()
 			gui.Enabled = true
