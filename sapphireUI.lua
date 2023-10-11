@@ -659,14 +659,24 @@ config example:
 
 lib.new = function(config)
 	local libNew = {}
-
-        print(config.settings.showAtStart)
-	lib.settings.dontEnterTextFields = config.settings and config.settings.dontEnterTextFields or lib.settings.dontEnterTextFields
-	lib.settings.showAtStart = config.settings and config.settings.showAtStart or lib.settings.showAtStart
-	lib.settings.keybinds = config.settings and config.settings.keybinds or lib.settings.keybinds
-	lib.settings.uiColor = config.settings and config.settings.uiColor or lib.settings.uiColor
-	lib.settings.theme = config.settings and config.settings.theme or lib.settings.theme
-        print(lib.settings.showAtStart)
+	
+	if config.settings then
+		if config.settings.dontEnterTextFields then
+			lib.settings.dontEnterTextFields = config.settings.dontEnterTextFields
+		end
+		if config.settings.showAtStart then
+			lib.settings.showAtStart = config.settings.showAtStart
+		end
+		if config.settings.keybinds then
+			lib.settings.keybinds = config.settings.keybinds
+		end
+		if config.settings.uiColor then
+			lib.settings.uiColor = config.settings.uiColor
+		end
+		if config.settings.theme then
+			lib.settings.theme = config.settings.theme
+		end
+	end
 
 	local function insert_colorable(obj, prop)
 		lib.colorable[obj] = prop
