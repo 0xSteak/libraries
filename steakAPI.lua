@@ -18,7 +18,8 @@ if getgenv().steakloaded then reload = true end
 
 Steak = {
 	versioN = "a_2",
-	reload = reload
+	reload = reload,
+	floating = false,
 }
 
 
@@ -355,14 +356,16 @@ Steak.float = function()
 	Steak.hmnd().HumanoidDescription.BodyTypeScale = 0
 	floatpart.CFrame = pos
 	floatpart.CanCollide = true
-	function floatfunc:Refresh()
-		pos = CFrame.new(Steak.hrp().Position.X, Steak.hrp().Position.Y - 3.75, Steak.hrp().Position.Z)
-		floatpart.CFrame = pos
-	end
-	function floatfunc:Disable()
-		floatpart.CanCollide = false
-	end
+	Steak.floating = true
 	return floatfunc
+end
+
+Steak.disableFloat = function()
+	if Steak.ws():FindFirstChild("_FLOATPART") then
+		local floatpart = Steak.ws()._FLOATPART
+		floatpart.CanCollide = false
+		Steak.floating = false
+	end
 end
 
 Steak.webhook = function(webhook, data)
