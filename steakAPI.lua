@@ -446,7 +446,7 @@ if Steak.studio then
 	return Steak
 else
 	getgenv().Steak = Steak
-	setreadonly(getgenv().Steak, true)
+	--setreadonly(getgenv().Steak, true)
 	if Steak.reload then
 		game:GetService('TestService'):Message("SteakAPI reloaded v"..tostring(Steak.versioN))
 	else
