@@ -71,7 +71,7 @@ end
 
 local function randomString(len)
 	local charspack = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!#$%^&*(){}[]|/<>.?'
-	local split = charspack.split('')
+	local split = charspack:split('')
 	local randomized = ""
 	for i = 1, len do
 		randomized = randomized..split[math.random(#split)]
@@ -585,7 +585,7 @@ elementCreate.dropdown = function()
 				BackgroundTransparency = 1,
 				Size = UDim2.new(0, 170, 0, 90),
 				ScrollBarImageColor3 = Color3.fromRGB(255, 255, 255),
-                                ScrollBarThickness = 2,
+                ScrollBarThickness = 2,
 				create("UIListLayout", {
 					Name = "ListLayout",
 					SortOrder = Enum.SortOrder.LayoutOrder,
@@ -639,6 +639,36 @@ elementCreate.line = function()
 			Position = UDim2.new(0, 10, 0, 10),
 			Size = UDim2.new(0, 150, 0, 1),
 		})
+	})
+end
+elementCreate.menu = function()
+	return create("Frame", {
+		Name = "_MENU",
+		BackgroundColor3 = Color3.fromRGB(10, 10, 10),
+		BorderSizePixel = 0,
+		create("UIListLayout", {
+			Name = "ListLayout",
+			SortOrder = Enum.SortOrder.LayoutOrder,
+			FillDirection = Enum.FillDirection.Vertical,
+			HorizontalAlignment = Enum.HorizontalAlignment.Center,
+			VerticalAlignment = Enum.VerticalAlignment.Top
+		}),
+		create("UIPadding", {
+			Name = "Padding",
+			PaddingLeft = UDim.new(0, 5)
+		}),
+		create("UICorner", {CornerRadius = UDim.new(0, 10)})
+	})
+end
+elementCreate.menuOption = function()
+	return create("TextButton", {
+		Name = "MenuOption",
+		BackgroundTransparency = 1,
+		Size = UDim2.new(0, 0, 0, 20),
+		FontFace = Font.new("rbxasset://fonts/families/Ubuntu.json"),
+		Text = "",
+		TextColor3 = lib.settings.theme == 0 and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(0, 0, 0),
+		TextSize = 12
 	})
 end
 
@@ -967,6 +997,41 @@ lib.new = function(config)
 			end
 		end
 
+		function menu(options)
+			local menuObj = elementCreate.menu()
+
+			menuObj.Name = randomString(30)
+			menuObj.Visible = false
+			menuObj.Parent = gui
+
+			local maxSize = 0
+
+			for i,v in pairs(options) do
+				local option = elementCreate.menuOption()
+
+				option.Name = i
+				option.Parent = menuObj
+				option.Text = i
+
+				option.Size = UDim2.fromOffset(option.TextBounds.X + 10, 30)
+
+				if maxSize < option.TextBounds.X then
+					maxSize = option.TextBounds.X
+				end
+
+				option.MouseButton1Click:Connect(function()
+					v()
+				end)
+			end
+
+			menuObj.Size = UDim2.new(maxSize + 20, menuObj.ListLayout.AbsoluteContentSize.Y)
+			menuObj.Position = UDim2.fromOffset(mouse().X, mouse().Y)
+
+			mouse().Button1Up:Once(function()
+				menuObj:Destroy()
+			end)
+		end
+
 		for i,v in pairs(element:GetDescendants()) do
 			if v.ClassName ~= "UICorner" and v.ClassName ~= "UIListLayout" then
 				v.Size = UDim2.new(v.AbsoluteSize.X / v.Parent.AbsoluteSize.X, 0, v.AbsoluteSize.Y / v.Parent.AbsoluteSize.Y, 0)
@@ -1131,7 +1196,7 @@ lib.new = function(config)
 				return addLabel
 			end
 
-			addSection.addButton = function(buttonText, buttonCallback, disabled)
+			addSection.addButton = function(buttonText, buttonCallback, info, disabled)
 				local addButton = {}
 
 				local button = elementCreate.button()
@@ -1188,7 +1253,7 @@ lib.new = function(config)
 				end)
 
 				button.MouseButton1Down:Connect(function()
-					if not lib.ctrl_pressed and not disabled then
+					if not disabled then
 						if lib.settings.theme == 0 then
 							button.TextColor3 = Color3.fromRGB(225, 225, 225)
 						else
@@ -1206,52 +1271,99 @@ lib.new = function(config)
 				end)
 
 				local callback = buttonCallback
+				local keybind = nil
+				local binding = false
+
+				local function startBinding()
+					binding = true
+					local keybindtext
+					if keybind == nil then
+						keybindtext = "nil"
+					else
+						keybindtext = keybind.Name
+					end
+					local msgbox = messageBox("Keybind ("..button.Text..") ["..keybindtext.."]", "Press key to bind...", {"Cancel"})
+					local disconnecting = false
+					local inputconnection
+					local function disconnect()
+						inputconnection:Disconnect()
+					end
+					inputconnection = uis.InputEnded:Connect(function(input)
+						if disconnecting then return end
+						if input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode ~= Enum.KeyCode.LeftControl and not uis:GetFocusedTextBox() then
+							local blacklist = {"W","A","S","D","Slash","Tab","Backspace","Escape","Space","Delete","Unknown","Backquote","LeftControl"}
+							local blacklisted = table.find(blacklist, input.KeyCode.Name) and true or false
+							disconnecting = true
+							if blacklisted then
+								keybind = nil
+							else
+								keybind = input.KeyCode
+							end
+							local keybindName = keybind and keybind.Name or "NONE"
+							msgbox.editText("Binded: ["..keybind.Name.."]")
+							wait(1)
+							msgbox.hide()
+							binding = false
+							disconnect()
+						end
+					end)
+				end
+
+				button.MouseButton2Click:Connect(function()
+					if info ~= nil then
+						if keybind ~= nil then
+							menu({
+								["Info"] = function()
+									messageBox(buttonText, info, {"Ok"})
+								end,
+								["Set Keybind"] = function()
+									startBinding()
+								end,
+								["Remove Keybind"] = function()
+									keybind = nil
+								end
+							})
+						else
+							menu({
+								["Info"] = function()
+									messageBox(buttonText, info, {"Ok"})
+								end,
+								["Set Keybind"] = function()
+									startBinding()
+								end
+							})
+						end
+					else
+						if keybind ~= nil then
+							menu({
+								["Set Keybind"] = function()
+									startBinding()
+								end,
+								["Remove Keybind"] = function()
+									keybind = nil
+								end
+							})
+						else
+							menu({
+								["Set Keybind"] = function()
+									startBinding()
+								end
+							})
+						end
+					end
+				end)
 
 				button.MouseButton1Click:Connect(function()
-					if not lib.ctrl_pressed and not disabled then
+					if not disabled then
 						callback()
 					end
 				end)
 
-				local keybind = nil
-				local binding = false
-
-				button.MouseButton1Click:Connect(function()
+				--[[button.MouseButton1Click:Connect(function()
 					if lib.settings.keybinds and lib.ctrl_pressed then
-						binding = true
-						local keybindtext
-						if keybind == nil then
-							keybindtext = "nil"
-						else
-							keybindtext = keybind.Name
-						end
-						local msgbox = messageBox("Keybind ("..button.Text..") ["..keybindtext.."]", "Press key to bind...", {"Cancel"})
-						local disconnecting = false
-						local inputconnection
-						local function disconnect()
-							inputconnection:Disconnect()
-						end
-						inputconnection = uis.InputEnded:Connect(function(input)
-							if disconnecting then return end
-							if input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode ~= Enum.KeyCode.LeftControl and not uis:GetFocusedTextBox() then
-								local blacklist = {"W","A","S","D","Slash","Tab","Backspace","Escape","Space","Delete","Unknown","Backquote","LeftControl"}
-								local blacklisted = table.find(blacklist, input.KeyCode.Name) and true or false
-								disconnecting = true
-								if blacklisted then
-									keybind = nil
-								else
-									keybind = input.KeyCode
-								end
-								local keybindName = keybind and keybind.Name or "NONE"
-								msgbox.editText("Binded: ["..keybind.Name.."]")
-								wait(1)
-								msgbox.hide()
-								binding = false
-								disconnect()
-							end
-						end)
+
 					end
-				end)
+				end)]]
 
 				uis.InputEnded:Connect(function(input)
 					if input.UserInputType == Enum.UserInputType.Keyboard then
