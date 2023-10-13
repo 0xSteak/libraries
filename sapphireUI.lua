@@ -1048,6 +1048,7 @@ lib.new = function(config)
 
 		menuObj.Size = UDim2.new(maxSize + 20, menuObj.ListLayout.AbsoluteContentSize.Y)
 		menuObj.Position = UDim2.fromOffset(mouse().X, mouse().Y)
+		menuObj.Visible = true
 
 		mouse().Button1Up:Once(function()
 			menuObj:Destroy()
