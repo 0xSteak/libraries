@@ -997,7 +997,7 @@ lib.new = function(config)
 			end
 		end
 
-		function menu(options)
+		local function showMenu(options)
 			local menuObj = elementCreate.menu()
 
 			menuObj.Name = randomString(30)
@@ -1312,7 +1312,7 @@ lib.new = function(config)
 				button.MouseButton2Click:Connect(function()
 					if info ~= nil then
 						if keybind ~= nil then
-							menu({
+							showMenu({
 								["Info"] = function()
 									messageBox(buttonText, info, {"Ok"})
 								end,
@@ -1324,7 +1324,7 @@ lib.new = function(config)
 								end
 							})
 						else
-							menu({
+							showMenu({
 								["Info"] = function()
 									messageBox(buttonText, info, {"Ok"})
 								end,
@@ -1335,7 +1335,7 @@ lib.new = function(config)
 						end
 					else
 						if keybind ~= nil then
-							menu({
+							showMenu({
 								["Set Keybind"] = function()
 									startBinding()
 								end,
@@ -1344,7 +1344,7 @@ lib.new = function(config)
 								end
 							})
 						else
-							menu({
+							showMenu({
 								["Set Keybind"] = function()
 									startBinding()
 								end
