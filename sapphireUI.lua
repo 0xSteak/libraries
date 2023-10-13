@@ -911,7 +911,7 @@ lib.new = function(config)
 		local function show()
 			element.Size = UDim2.new(0, 290, 0, 139)
 			tween(element, {Size = UDim2.new(0, 275, 0, 132), BackgroundTransparency = 0})
-			--tween(mainWindow.BlackSolid, {BackgroundTransparency = 0.75})
+			tween(mainWindow.BlackSolid, {BackgroundTransparency = 0.75})
 			tween(element.Top.Title, {TextTransparency = 0})
 			tween(element.Label, {TextTransparency = 0})
 			for i,v in pairs(element.ButtonContainer:GetChildren()) do
@@ -924,7 +924,7 @@ lib.new = function(config)
 		local function hide()
 			a = true
 			tween(element, {Size = UDim2.new(0, 290, 0, 139), BackgroundTransparency = 1})
-			--if not checkmessages() then tween(mainWindow.BlackSolid, {BackgroundTransparency = 1}) end
+			if not checkmessages() then tween(mainWindow.BlackSolid, {BackgroundTransparency = 1}) end
 			tween(element.Top.Title, {TextTransparency = 1})
 			tween(element.Label, {TextTransparency = 1})
 			for i,v in pairs(element.ButtonContainer:GetChildren()) do
@@ -1023,17 +1023,18 @@ lib.new = function(config)
 		local menuObj = elementCreate.menu()
 
 		menuObj.Name = randomString(30)
-		menuObj.Visible = false
+		menuObj.BackgroundTransparency = 1
 		menuObj.Parent = gui
 
 		local maxSize = 0
 
-		for i,v in pairs(options) do
+		for i,v in ipairs(options) do
 			local option = elementCreate.menuOption()
 
-			option.Name = i
+			option.Name = v.Name
+            option.TextTransparency = 1
 			option.Parent = menuObj
-			option.Text = i
+			option.Text = v.Name
 
 			option.Size = UDim2.fromOffset(option.TextBounds.X + 10, 30)
 
@@ -1041,18 +1042,59 @@ lib.new = function(config)
 				maxSize = option.TextBounds.X
 			end
 
-			option.MouseButton1Click:Connect(function()
-				v()
+			option.MouseButton1Down:Connect(function()
+				v.Callback()
 			end)
 		end
 
-		menuObj.Size = UDim2.new(maxSize + 20, menuObj.ListLayout.AbsoluteContentSize.Y)
+		menuObj.Size = UDim2.fromOffset(maxSize + 20, menuObj.ListLayout.AbsoluteContentSize.Y)
 		menuObj.Position = UDim2.fromOffset(mouse().X, mouse().Y)
-		menuObj.Visible = true
 
-		mouse().Button1Up:Once(function()
-			menuObj:Destroy()
-		end)
+        local function tween(obj, props)
+			if tt[obj] ~= nil then tt[obj]:Pause() end
+			local tinfo = TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+			local t = ts:Create(obj, tinfo, props)
+			t:Play()
+			tt[obj] = t
+		end
+		
+        local function show()
+            tween(menuObj, {BackgroundTransparency = 0})
+            for i,v in ipairs(options) do
+                tween(menuObj[v.Name], {TextTransparency = 0})
+            end
+        end
+
+        local function destroy()
+            tween(menuObj, {BackgroundTransparency = 1})
+            for i,v in ipairs(options) do
+                tween(menuObj[v.Name], {TextTransparency = 1})
+            end
+            wait(0.5)
+            menuObj:Destroy()
+        end
+
+        show()
+        wait(0.1)
+
+        local connection1
+        local connection2
+
+		connection1 = uis.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                destroy()
+                connection1:Disconnect()
+                connection2:Disconnect()
+            end
+        end)
+
+        connection2 = uis.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton2 then
+                destroy()
+                connection1:Disconnect()
+                connection2:Disconnect()
+            end
+        end)
 	end
 
 	local function selectTab(tabName)
@@ -1283,12 +1325,15 @@ lib.new = function(config)
 					else
 						keybindtext = keybind.Name
 					end
-					local msgbox = messageBox("Keybind ("..button.Text..") ["..keybindtext.."]", "Press key to bind...", {"Cancel"})
 					local disconnecting = false
 					local inputconnection
 					local function disconnect()
 						inputconnection:Disconnect()
 					end
+                    local msgbox = messageBox("Keybind ("..button.Text..") ["..keybindtext.."]", "Press key to bind...", {"Cancel"}, function()
+                        binding = false
+                        disconnect()
+                    end)
 					inputconnection = uis.InputEnded:Connect(function(input)
 						if disconnecting then return end
 						if input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode ~= Enum.KeyCode.LeftControl and not uis:GetFocusedTextBox() then
@@ -1301,7 +1346,7 @@ lib.new = function(config)
 								keybind = input.KeyCode
 							end
 							local keybindName = keybind and keybind.Name or "NONE"
-							msgbox.editText("Binded: ["..keybind.Name.."]")
+							msgbox.editText("Binded: ["..keybindName.."]")
 							wait(1)
 							msgbox.hide()
 							binding = false
@@ -1310,46 +1355,70 @@ lib.new = function(config)
 					end)
 				end
 
-				button.MouseButton2Click:Connect(function()
+				button.MouseButton2Down:Connect(function()
 					if info ~= nil then
 						if keybind ~= nil then
-							showMenu({
-								["Info"] = function()
-									messageBox(buttonText, info, {"Ok"})
-								end,
-								["Set Keybind"] = function()
-									startBinding()
-								end,
-								["Remove Keybind"] = function()
-									keybind = nil
-								end
-							})
+                            showMenu({
+                                {
+                                    Name = "Info",
+                                    Callback = function()
+                                        messageBox(buttonText, info, {"Ok"})
+                                    end
+                                },
+                                {
+                                    Name = "Set Keybind",
+                                    Callback = function()
+                                        startBinding()
+                                    end
+                                },
+                                {
+                                    Name = "Remove Keybind",
+                                    Callback = function()
+                                        keybind = nil
+                                    end
+                                }
+                            })
 						else
-							showMenu({
-								["Info"] = function()
-									messageBox(buttonText, info, {"Ok"})
-								end,
-								["Set Keybind"] = function()
-									startBinding()
-								end
-							})
+                            showMenu({
+                                {
+                                    Name = "Info",
+                                    Callback = function()
+                                        messageBox(buttonText, info, {"Ok"})
+                                    end
+                                },
+                                {
+                                    Name = "Set Keybind",
+                                    Callback = function()
+                                        startBinding()
+                                    end
+                                }
+                            })
 						end
 					else
 						if keybind ~= nil then
-							showMenu({
-								["Set Keybind"] = function()
-									startBinding()
-								end,
-								["Remove Keybind"] = function()
-									keybind = nil
-								end
-							})
+                            showMenu({
+                                {
+                                    Name = "Set Keybind",
+                                    Callback = function()
+                                        startBinding()
+                                    end
+                                },
+                                {
+                                    Name = "Remove Keybind",
+                                    Callback = function()
+                                        keybind = nil
+                                    end
+                                }
+                            })
 						else
-							showMenu({
-								["Set Keybind"] = function()
-									startBinding()
-								end
-							})
+                            showMenu({
+                                {
+                                    Name = "Set Keybind",
+                                    Callback = function()
+                                        startBinding()
+                                    end
+                                }
+                            })
 						end
 					end
 				end)
@@ -1414,7 +1483,7 @@ lib.new = function(config)
 				return addButton
 			end
 
-			addSection.addToggle = function(toggleName, initState, toggleCallback, disabled)
+			addSection.addToggle = function(toggleName, initState, toggleCallback, info, disabled)
 				local addToggle = {}
 
 				local stateBool = initState or false
@@ -1471,7 +1540,7 @@ lib.new = function(config)
 				end
 
 				toggle.MouseButton1Click:Connect(function()
-					if not lib.ctrl_pressed and not disabled then
+					if not disabled then
 						stateBool = not stateBool
 						setState(stateBool)
 						toggleCallback(stateBool)
@@ -1481,40 +1550,109 @@ lib.new = function(config)
 				local keybind = nil
 				local binding = false
 
-				toggle.MouseButton1Click:Connect(function()
-					if lib.settings.keybinds and lib.ctrl_pressed then
-						binding = true
-						local keybindtext
-						if keybind == nil then
-							keybindtext = "NONE"
+                local function startBinding()
+                    binding = true
+                    local keybindtext
+                    if keybind == nil then
+                        keybindtext = "NONE"
+                    else
+                        keybindtext = keybind.Name
+                    end
+                    local disconnecting = false
+                    local inputconnection
+                    local function disconnect()
+                        inputconnection:Disconnect()
+                    end
+                    local msgbox = messageBox("Keybind ("..toggle.Text..") ["..keybindtext.."]", "Press key to bind...", {"Cancel"}, function()
+                        binding = false
+                        disconnect()
+                    end)
+                    inputconnection = uis.InputEnded:Connect(function(input)
+                        if disconnecting then return end
+                        if input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode ~= Enum.KeyCode.LeftControl and not uis:GetFocusedTextBox() then
+                            local blacklist = {"W","A","S","D","Slash","Tab","Backspace","Escape","Space","Delete","Unknown","Backquote"}
+                            local blacklisted = table.find(blacklist, input.KeyCode.Name) and true or false
+                            disconnecting = true
+                            if blacklisted then
+                                keybind = nil
+                            else
+                                keybind = input.KeyCode
+                            end
+                            local keybindName = keybind and keybind.Name or "NONE"
+                            msgbox.editText("Binded: ["..keybindName.."]")
+                            wait(1)
+                            msgbox.hide()
+                            binding = false
+                            disconnect()
+                        end
+                    end)
+                end
+
+                toggle.MouseButton2Down:Connect(function()
+					if info ~= nil then
+						if keybind ~= nil then
+                            showMenu({
+                                {
+                                    Name = "Info",
+                                    Callback = function()
+                                        messageBox(toggleName, info, {"Ok"})
+                                    end
+                                },
+                                {
+                                    Name = "Set Keybind",
+                                    Callback = function()
+                                        startBinding()
+                                    end
+                                },
+                                {
+                                    Name = "Remove Keybind",
+                                    Callback = function()
+                                        keybind = nil
+                                    end
+                                }
+                            })
 						else
-							keybindtext = keybind.Name
+                            showMenu({
+                                {
+                                    Name = "Info",
+                                    Callback = function()
+                                        messageBox(toggleName, info, {"Ok"})
+                                    end
+                                },
+                                {
+                                    Name = "Set Keybind",
+                                    Callback = function()
+                                        startBinding()
+                                    end
+                                }
+                            })
 						end
-						local msgbox = messageBox("Keybind ("..toggle.Text..") ["..keybindtext.."]", "Press key to bind...", {"Cancel"})
-						local disconnecting = false
-						local inputconnection
-						local function disconnect()
-							inputconnection:Disconnect()
+					else
+						if keybind ~= nil then
+                            showMenu({
+                                {
+                                    Name = "Set Keybind",
+                                    Callback = function()
+                                        startBinding()
+                                    end
+                                },
+                                {
+                                    Name = "Remove Keybind",
+                                    Callback = function()
+                                        keybind = nil
+                                    end
+                                }
+                            })
+						else
+                            showMenu({
+                                {
+                                    Name = "Set Keybind",
+                                    Callback = function()
+                                        startBinding()
+                                    end
+                                }
+                            })
 						end
-						inputconnection = uis.InputEnded:Connect(function(input)
-							if disconnecting then return end
-							if input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode ~= Enum.KeyCode.LeftControl and not uis:GetFocusedTextBox() then
-								local blacklist = {"W","A","S","D","Slash","Tab","Backspace","Escape","Space","Delete","Unknown","Backquote"}
-								local blacklisted = table.find(blacklist, input.KeyCode.Name) and true or false
-								disconnecting = true
-								if blacklisted then
-									keybind = nil
-								else
-									keybind = input.KeyCode
-								end
-								local keybindName = keybind and keybind.Name or "NONE"
-								msgbox.editText("Binded: ["..keybindName.."]")
-								wait(1)
-								msgbox.hide()
-								binding = false
-								disconnect()
-							end
-						end)
 					end
 				end)
 
