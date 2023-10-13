@@ -997,41 +997,6 @@ lib.new = function(config)
 			end
 		end
 
-		local function showMenu(options)
-			local menuObj = elementCreate.menu()
-
-			menuObj.Name = randomString(30)
-			menuObj.Visible = false
-			menuObj.Parent = gui
-
-			local maxSize = 0
-
-			for i,v in pairs(options) do
-				local option = elementCreate.menuOption()
-
-				option.Name = i
-				option.Parent = menuObj
-				option.Text = i
-
-				option.Size = UDim2.fromOffset(option.TextBounds.X + 10, 30)
-
-				if maxSize < option.TextBounds.X then
-					maxSize = option.TextBounds.X
-				end
-
-				option.MouseButton1Click:Connect(function()
-					v()
-				end)
-			end
-
-			menuObj.Size = UDim2.new(maxSize + 20, menuObj.ListLayout.AbsoluteContentSize.Y)
-			menuObj.Position = UDim2.fromOffset(mouse().X, mouse().Y)
-
-			mouse().Button1Up:Once(function()
-				menuObj:Destroy()
-			end)
-		end
-
 		for i,v in pairs(element:GetDescendants()) do
 			if v.ClassName ~= "UICorner" and v.ClassName ~= "UIListLayout" then
 				v.Size = UDim2.new(v.AbsoluteSize.X / v.Parent.AbsoluteSize.X, 0, v.AbsoluteSize.Y / v.Parent.AbsoluteSize.Y, 0)
@@ -1052,6 +1017,41 @@ lib.new = function(config)
 				return element
 			end,
 		}
+	end
+
+	local function showMenu(options)
+		local menuObj = elementCreate.menu()
+
+		menuObj.Name = randomString(30)
+		menuObj.Visible = false
+		menuObj.Parent = gui
+
+		local maxSize = 0
+
+		for i,v in pairs(options) do
+			local option = elementCreate.menuOption()
+
+			option.Name = i
+			option.Parent = menuObj
+			option.Text = i
+
+			option.Size = UDim2.fromOffset(option.TextBounds.X + 10, 30)
+
+			if maxSize < option.TextBounds.X then
+				maxSize = option.TextBounds.X
+			end
+
+			option.MouseButton1Click:Connect(function()
+				v()
+			end)
+		end
+
+		menuObj.Size = UDim2.new(maxSize + 20, menuObj.ListLayout.AbsoluteContentSize.Y)
+		menuObj.Position = UDim2.fromOffset(mouse().X, mouse().Y)
+
+		mouse().Button1Up:Once(function()
+			menuObj:Destroy()
+		end)
 	end
 
 	local function selectTab(tabName)
