@@ -316,19 +316,33 @@ Steak.tween = function(pos, time_, easingstyle, easingdir)
 end
 
 Steak.distance = function(a, b)
+	a = a
+	b = b
+	if typeof(a) == "Instance" then
+		a = a.Position
+	end
+	if typeof(b) == "Instance" then
+		b = b.Position
+	end
 	if b == nil then
-		local distance = (Steak.hrp().Position - (a.Position or a)).Magnitude
+		local distance = (Steak.hrp().Position - a).Magnitude
 		return distance
 	else
-		local distance = (a.Position - b.Position).Magnitude
+		local distance = (a - b).Magnitude
 		return distance
 	end
 end
 
-Steak.closestObj = function(objects)
+Steak.closestObj = function(object, objects)
+	object = object
+	objects = objects
+	if objects == nil then
+		objects = object
+		object = Steak.hrp()
+	end
 	local a = objects[1]
 	for i,v in pairs(objects) do
-		if Steak.distance(v) < Steak.distance(a) then
+		if Steak.distance(object, v) < Steak.distance(object, a) then
 			a = v
 		end
 	end
