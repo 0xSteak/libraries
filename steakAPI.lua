@@ -12,12 +12,11 @@
 
 local reload = false
 
-if not pcall(getgenv) then warn("getgenv is required, use krnl/synapse") return 0 end
-if not pcall(setreadonly, {}, false) then warn("setreadonly is required, use krnl/synapse") return 0 end
+if not pcall(getgenv) then warn("getgenv is required") return 0 end
+if not pcall(setreadonly, {}, false) then warn("setreadonly is required") return 0 end
 if getgenv().steakloaded then reload = true end
 
 Steak = {
-	versioN = "a_2",
 	reload = reload,
 	floating = false,
 }
@@ -452,9 +451,9 @@ setreadonly(string, true)
 
 if Steak.studio then
 	if Steak.reload then
-		game:GetService('TestService'):Message("SteakAPI reloaded v"..tostring(Steak.versioN))
+		game:GetService('TestService'):Message("Steak Utilities reloaded")
 	else
-		game:GetService('TestService'):Message("SteakAPI loaded v"..tostring(Steak.versioN))
+		game:GetService('TestService'):Message("Steak Utilities loaded")
 	end
 	_G.steakloaded = true
 	return Steak
@@ -462,9 +461,9 @@ else
 	getgenv().Steak = Steak
 	--setreadonly(getgenv().Steak, true)
 	if Steak.reload then
-		game:GetService('TestService'):Message("SteakAPI reloaded v"..tostring(Steak.versioN))
+		game:GetService('TestService'):Message("Steak Utilities reloaded")
 	else
-		game:GetService('TestService'):Message("SteakAPI loaded v"..tostring(Steak.versioN))
+		game:GetService('TestService'):Message("Steak Utilities loaded")
 	end
 	getgenv().steakloaded = true
 end
