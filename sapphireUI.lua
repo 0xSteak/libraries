@@ -1160,9 +1160,9 @@ lib.new = function(config)
 
 		local function a()
 			if getSide(true).Name == "Left" then
-				tab.CanvasSize = UDim2.new(0, 0, 0, tab.Left.ListLayout.AbsoluteContentSize.Y)
+				tab.CanvasSize = UDim2.new(0, 0, 0, tab.Left.ListLayout.AbsoluteContentSize.Y + 20)
 			else
-				tab.CanvasSize = UDim2.new(0, 0, 0, tab.Right.ListLayout.AbsoluteContentSize.Y)
+				tab.CanvasSize = UDim2.new(0, 0, 0, tab.Right.ListLayout.AbsoluteContentSize.Y + 20)
 			end
 		end
 		tab.Left.ListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(a)
