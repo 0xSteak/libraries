@@ -446,9 +446,9 @@ Steak.UI = function()
 	return loadstring(game:HttpGet("https://raw.githubusercontent.com/0xSteak/libraries/main/sapphireUI.lua"))()
 end
 
-Steak.newThread = function(func, ...)
+Steak.newThread = function(func)
     coroutine.wrap(function()
-        func(...)
+        func()
     end)()
 end
 
