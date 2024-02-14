@@ -836,6 +836,7 @@ lib.new = function(config)
 	if not lib.settings.showAtStart then
 		gui.Enabled = false
 		libNew.show = function()
+			setthreadcontext(8)
 			gui.Enabled = true
 		end
 	end
