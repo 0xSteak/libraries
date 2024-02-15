@@ -452,6 +452,14 @@ Steak.newThread = function(func)
     end)()
 end
 
+Steak.tableFromIndexes = function(t)
+	local result = {}
+	for i,v in pairs(t) do
+		table.insert(result, i)
+	end
+	return result
+end
+
 setreadonly(Instance, true)
 setreadonly(string, true)
 
