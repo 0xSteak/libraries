@@ -1733,6 +1733,7 @@ lib.new = function(config)
 				local fieldPlaceholder = args.placeholder
 				local fieldCallback = args.callback
 				local fieldDisabled = args.disabled
+				local fieldFilter = args.filter
 
 				local addTextField = {}
 
@@ -1758,6 +1759,12 @@ lib.new = function(config)
 				textField.Field.FocusLost:Connect(function()
 					fieldCallback(textField.Field.Text)
 				end)
+
+				if fieldFilter then
+					textField.Field.Changed:Connect(function()
+						textField.Field.Text = textField.Field.Text:match(fieldFilter)
+					end)
+				end
 
 				addTextField.getObj = function()
 					return textField
