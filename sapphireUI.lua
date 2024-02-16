@@ -1240,7 +1240,12 @@ lib.new = function(config)
 				return addLabel
 			end
 
-			addSection.addButton = function(buttonText, buttonCallback, info, disabled)
+			addSection.addButton = function(args)
+				local buttonText = args.buttonText
+				local buttonCallback = args.buttonCallback
+				local info = args.info
+				local disabled = args.disabled
+
 				local addButton = {}
 
 				local button = elementCreate.button()
@@ -1484,7 +1489,13 @@ lib.new = function(config)
 				return addButton
 			end
 
-			addSection.addToggle = function(toggleName, initState, toggleCallback, info, disabled)
+			addSection.addToggle = function(args)
+				local toggleName = args.toggleName
+				local initState = args.initState
+				local toggleCallback = args.toggleCallback
+				local info = args.info
+				local disabled = args.disabled
+
 				local addToggle = {}
 
 				local stateBool = initState or false
@@ -1717,7 +1728,12 @@ lib.new = function(config)
 				return addToggle
 			end
 
-			addSection.addTextField = function(fieldName, fieldPlaceholder, fieldCallback, fieldDisabled)
+			addSection.addTextField = function(args)
+				local fieldName = args.fieldName
+				local fieldPlaceholder = args.fieldfieldPlaceholderName
+				local fieldCallback = args.fieldCallback
+				local fieldDisabled = args.fieldDisabled
+
 				local addTextField = {}
 
 				local fieldCallback = fieldCallback
@@ -1781,7 +1797,16 @@ lib.new = function(config)
 				return addTextField
 			end
 
-			addSection.addSlider = function(sliderName, min, max, initVal, decimals, suffix, sliderCallback)
+			addSection.addSlider = function(args)
+				local sliderName = args.sliderName
+				local min = args.min
+				local max = args.max
+				local initVal = args.initVal
+				local decimals = args.decimals
+				local suffix = args.suffix
+				local sliderCallback = args.sliderCallback
+				
+
 				local addSlider = {}
 
 				decimals = decimals or 0
@@ -1908,7 +1933,13 @@ lib.new = function(config)
 				return addSlider
 			end
 			
-			addSection.addDropdown = function(dropdownName, options, initVal, multiSelect, dropdownCallback)
+			addSection.addDropdown = function(args)
+				local dropdownName = args.dropdownName
+				local options = args.options
+				local initVal = args.initVal
+				local multiSelect = args.multiSelect
+				local dropdownCallback = args.dropdownCallback
+
 				local addDropdown = {}
 
 				local currentVal = initVal or nil
