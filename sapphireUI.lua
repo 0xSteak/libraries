@@ -1241,8 +1241,8 @@ lib.new = function(config)
 			end
 
 			addSection.addButton = function(args)
-				local buttonText = args.buttonText
-				local buttonCallback = args.buttonCallback
+				local buttonText = args.name
+				local buttonCallback = args.callback
 				local info = args.info
 				local disabled = args.disabled
 
@@ -1490,9 +1490,9 @@ lib.new = function(config)
 			end
 
 			addSection.addToggle = function(args)
-				local toggleName = args.toggleName
+				local toggleName = args.name
 				local initState = args.initState
-				local toggleCallback = args.toggleCallback
+				local toggleCallback = args.callback
 				local info = args.info
 				local disabled = args.disabled
 
@@ -1729,10 +1729,10 @@ lib.new = function(config)
 			end
 
 			addSection.addTextField = function(args)
-				local fieldName = args.fieldName
-				local fieldPlaceholder = args.fieldfieldPlaceholderName
-				local fieldCallback = args.fieldCallback
-				local fieldDisabled = args.fieldDisabled
+				local fieldName = args.name
+				local fieldPlaceholder = args.placeholder
+				local fieldCallback = args.callback
+				local fieldDisabled = args.disabled
 
 				local addTextField = {}
 
@@ -1798,13 +1798,13 @@ lib.new = function(config)
 			end
 
 			addSection.addSlider = function(args)
-				local sliderName = args.sliderName
+				local sliderName = args.name
 				local min = args.min
 				local max = args.max
 				local initVal = args.initVal
 				local decimals = args.decimals
 				local suffix = args.suffix
-				local sliderCallback = args.sliderCallback
+				local sliderCallback = args.callback
 				
 
 				local addSlider = {}
@@ -1934,11 +1934,11 @@ lib.new = function(config)
 			end
 			
 			addSection.addDropdown = function(args)
-				local dropdownName = args.dropdownName
+				local dropdownName = args.name
 				local options = args.options
 				local initVal = args.initVal
 				local multiSelect = args.multiSelect
-				local dropdownCallback = args.dropdownCallback
+				local dropdownCallback = args.callback
 
 				local addDropdown = {}
 
