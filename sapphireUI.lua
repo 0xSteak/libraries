@@ -1242,7 +1242,7 @@ lib.new = function(config)
 
 			addSection.addButton = function(args)
 				local buttonText = args.name
-				local buttonCallback = args.callback
+				local buttonCallback = args.callback or function() end
 				local info = args.info
 				local disabled = args.disabled
 
@@ -1492,7 +1492,7 @@ lib.new = function(config)
 			addSection.addToggle = function(args)
 				local toggleName = args.name
 				local initState = args.initState
-				local toggleCallback = args.callback
+				local toggleCallback = args.callback or function() end
 				local info = args.info
 				local disabled = args.disabled
 
@@ -1731,7 +1731,7 @@ lib.new = function(config)
 			addSection.addTextField = function(args)
 				local fieldName = args.name
 				local fieldPlaceholder = args.placeholder
-				local fieldCallback = args.callback
+				local fieldCallback = args.callback or function() end
 				local fieldDisabled = args.disabled
 				local fieldFilter = args.filter
 
@@ -1811,7 +1811,7 @@ lib.new = function(config)
 				local initVal = args.initVal
 				local decimals = args.decimals
 				local suffix = args.suffix
-				local sliderCallback = args.callback
+				local sliderCallback = args.callback or function() end
 				
 
 				local addSlider = {}
@@ -1945,7 +1945,7 @@ lib.new = function(config)
 				local options = args.options
 				local initVal = args.initVal
 				local multiSelect = args.multiSelect
-				local dropdownCallback = args.callback
+				local dropdownCallback = args.callback or function() end
 
 				local addDropdown = {}
 
