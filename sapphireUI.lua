@@ -1970,18 +1970,23 @@ lib.new = function(config)
 				end
 				
 				local opened = false
-				local containerSizeY = 90
+				local containerSizeY = 200
 				
 				DropdownContainer.ListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-					containerSizeY = math.clamp(DropdownContainer.ListLayout.AbsoluteContentSize.Y, 0, 90)
-					DropdownContainer.Parent.Size = UDim2.new(0, 170, 0, math.clamp(DropdownContainer.ListLayout.AbsoluteContentSize.Y, 0, 90))
+					containerSizeY = math.clamp(DropdownContainer.ListLayout.AbsoluteContentSize.Y, 0, 200)
+					DropdownContainer.Parent.Size = UDim2.new(0, 170, 0, math.clamp(DropdownContainer.ListLayout.AbsoluteContentSize.Y, 0, 200))
 					DropdownContainer.CanvasSize = UDim2.new(0, 0, 0, DropdownContainer.ListLayout.AbsoluteContentSize.Y)
 					if opened then
 						Dropdown.Size = UDim2.new(0, 170, 0, 45 + containerSizeY + 10)
 					end
 				end)
+
+				local function cleanSearchBox()
+					DropdownContainer._SearchBox.Text = ""
+				end
 				
 				local function open()
+					cleanSearchBox()
 					if tt[Dropdown] ~= nil then tt[Dropdown]:Pause() end
 					if tt[Dropdown.Toggle.Arrow] ~= nil then tt[Dropdown.Toggle.Arrow]:Pause() end
 					local tinfo = TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
