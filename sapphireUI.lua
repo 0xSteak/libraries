@@ -1762,7 +1762,7 @@ lib.new = function(config)
 
 				if fieldFilter then
 					textField.Field:GetPropertyChangedSignal("Text"):Connect(function()
-						textField.Field.Text = textField.Field.Text:match(fieldFilter)
+						textField.Field.Text = textField.Field.Text:match(fieldFilter) or ""
 					end)
 				end
 
