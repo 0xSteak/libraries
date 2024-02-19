@@ -87,7 +87,7 @@ Instance.cr = function(class, props)
 	end
 	return instance
 end
-string.time = function(timenum)
+string.time = function(timenum, zeroText)
 	local days = math.floor(timenum / 86400)
 	local hours = math.floor(timenum / 3600 - days * 24)
 	local minutes = math.floor(timenum / 60 - days * 1440 - hours * 60)
@@ -131,6 +131,8 @@ string.time = function(timenum)
 		str = str..seconds
 	elseif days <= 0 and hours <= 0 and minutes <= 0 then
 		return seconds.."s"
+	elseif days <= 0 and hours <= 0 and minutes <= 0 and seconds <= 0 then
+		return zeroText
 	end
 	return str
 end
