@@ -129,7 +129,7 @@ string.time = function(timenum, zeroText)
 			str = str.."0"
 		end
 		str = str..seconds
-	elseif days <= 0 and hours <= 0 and minutes <= 0 then
+	elseif days <= 0 and hours <= 0 and minutes <= 0 and seconds > 0 then
 		return seconds.."s"
 	elseif days <= 0 and hours <= 0 and minutes <= 0 and seconds <= 0 then
 		return zeroText
