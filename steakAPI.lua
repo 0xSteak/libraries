@@ -460,6 +460,10 @@ Steak.tableFromIndexes = function(t)
 	return result
 end
 
+Steak.rejoin = function()
+	game:GetService("TeleportService"):Teleport(game.PlaceId)
+end
+
 setreadonly(Instance, true)
 setreadonly(string, true)
 
