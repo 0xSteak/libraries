@@ -25,7 +25,7 @@ Steak = {
 Steak.rps = function()
 	return game:GetService('ReplicatedStorage')
 end
-Steak.rfs = function()
+Steak.rps = function()
 	return game:GetService('ReplicatedFirst')
 end
 Steak.ws = function()
