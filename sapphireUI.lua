@@ -682,6 +682,7 @@ elementCreate.colorpicker = function()
 		TextSize = 12,
         TextXAlignment = Enum.TextXAlignment.Left,
 		create("TextButton", {
+			AutoButtonColor = false,
 			Name = "Toggle",
 			BackgroundColor3 = Color3.fromRGB(255, 255, 255),
 			BackgroundTransparency = 0,
