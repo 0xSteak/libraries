@@ -61,15 +61,16 @@ Steak.lp = function()
 	return Steak.plrs().LocalPlayer
 end
 Steak.char = function()
-	return Steak.lp().Character or false
+	if not Steak.lp().Character then repeat wait() until Steak.lp().Character end
+	return Steak.lp().Character
 end
 
 Steak.hmnd = function()
-	return Steak.char().Humanoid or false
+	return Steak.char():WaitForChild("Humanoid")
 end
 
 Steak.hrp = function()
-	return Steak.char().HumanoidRootPart or false
+	return Steak.char():WaitForChild("HumanoidRootPart")
 end
 
 --Upgrading globals
