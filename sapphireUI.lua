@@ -545,7 +545,7 @@ elementCreate.dropdown = function()
 			TextXAlignment = Enum.TextXAlignment.Left
 		}),
 		create("TextButton", {
-                        AutoButtonColor = false,
+			AutoButtonColor = false,
 			Name = "Toggle",
 			BackgroundColor3 = Color3.fromRGB(40, 40, 40),
 			Position = UDim2.new(0, 0, 0, 20),
@@ -585,7 +585,7 @@ elementCreate.dropdown = function()
 				BackgroundTransparency = 1,
 				Size = UDim2.new(0, 170, 0, 90),
 				ScrollBarImageColor3 = Color3.fromRGB(255, 255, 255),
-                ScrollBarThickness = 2,
+				ScrollBarThickness = 2,
 				create("UIListLayout", {
 					Name = "ListLayout",
 					SortOrder = Enum.SortOrder.LayoutOrder,
@@ -671,6 +671,100 @@ elementCreate.menuOption = function()
 		TextSize = 12
 	})
 end
+elementCreate.colorpicker = function()
+	return create("TextButton", {
+		Name = "Colorpicker",
+		BackgroundTransparency = 1,
+		Size = UDim2.new(0, 170, 0, 20),
+		FontFace = Font.new("rbxasset://fonts/families/Ubuntu.json"),
+		Text = "Colorpicker",
+		TextColor3 = lib.settings.theme == 0 and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(0, 0, 0),
+		TextSize = 12,
+        TextXAlignment = Enum.TextXAlignment.Left,
+		create("TextButton", {
+			Name = "Toggle",
+			BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+			BackgroundTransparency = 0,
+			Position = UDim2.new(0, 154, 0, 2),
+			Size = UDim2.new(0, 16, 0, 16),
+			Text = "",
+			create("UICorner", {CornerRadius = UDim.new(1, 0)})
+		})
+	})
+end
+elementCreate.palette = function()
+	return create("Frame", {
+		Name = "Palette",
+		BackgroundColor3 = Color3.fromRGB(35, 35, 35),
+		BackgroundTransparency = 0,
+		Size = UDim2.new(0, 154, 0, 116),
+		Visible = false,
+		ZIndex = 2,
+		create("UICorner", {CornerRadius = UDim.new(0, 10)}),
+		create("Frame", {
+			Name = "ValImg",
+			BackgroundColor3 = Color3.fromRGB(255, 0, 0),
+			BackgroundTransparency = 0,
+			BorderColor3 = Color3.fromRGB(0, 0, 0),
+			BorderMode = Enum.BorderMode.Outline,
+			BorderSizePixel = 1,
+			Position = UDim2.new(0, 131, 0, 5),
+			Size = UDim2.new(0, 10, 0, 106),
+			ZIndex = 2,
+			create("UIGradient", {
+				Color = ColorSequence.new{
+					ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+					ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 0, 0))
+				},
+				Rotation = 90
+			}),
+			create("TextLabel", {
+				Name = "Arrow",
+				AnchorPoint = Vector2.new(0, 0.5),
+				BackgroundTransparency = 1,
+				Position = UDim2.new(1, 0, 0, 0),
+				Rotation = 90,
+				Size = UDim2.new(0, 8, 0, 10),
+				ZIndex = 2,
+				FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json"),
+				Text = "▼",
+				TextColor3 = Color3.fromRGB(255, 255, 255),
+				TextSize = 10,
+				TextStrokeTransparency = 0,
+				TextXAlignment = Enum.TextXAlignment.Center,
+				TextYAlignment = Enum.TextYAlignment.Center
+			})
+		}),
+		create("ImageLabel", {
+			Name = "HueSatImg",
+			BackgroundTransparency = 1,
+			BorderColor3 = Color3.fromRGB(0, 0, 0),
+			BorderMode = Enum.BorderMode.Outline,
+			BorderSizePixel = 1,
+			Position = UDim2.new(0, 5, 0, 5),
+			Size = UDim2.new(0, 121, 0, 106),
+			ZIndex = 2,
+			Image = "rbxassetid://698052001",
+			ScaleType = Enum.ScaleType.Stretch,
+			create("TextLabel", {
+				Name = "Cursor",
+				AnchorPoint = Vector2.new(0.5, 0.5),
+				BackgroundTransparency = 1,
+				Position = UDim2.new(1, 0, 0, 0),
+				Rotation = 90,
+				Size = UDim2.new(0, 12, 0, 12),
+				ZIndex = 2,
+				FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.ExtraLight),
+				Text = "+",
+				TextColor3 = Color3.fromRGB(255, 255, 255),
+				TextSize = 31,
+				TextStrokeTransparency = 0,
+				TextXAlignment = Enum.TextXAlignment.Center,
+				TextYAlignment = Enum.TextYAlignment.Center
+			})
+		})
+	})
+end
 
 --[[
 config example:
@@ -689,7 +783,7 @@ config example:
 
 lib.new = function(config)
 	local libNew = {}
-	
+
 	if config.settings then
 		if config.settings.dontEnterTextFields ~= nil then
 			lib.settings.dontEnterTextFields = config.settings.dontEnterTextFields
@@ -836,7 +930,6 @@ lib.new = function(config)
 	if not lib.settings.showAtStart then
 		gui.Enabled = false
 		libNew.show = function()
-			setthreadcontext(8)
 			gui.Enabled = true
 		end
 	end
@@ -1033,7 +1126,7 @@ lib.new = function(config)
 			local option = elementCreate.menuOption()
 
 			option.Name = v.Name
-            option.TextTransparency = 1
+			option.TextTransparency = 1
 			option.Parent = menuObj
 			option.Text = v.Name
 
@@ -1051,51 +1144,51 @@ lib.new = function(config)
 		menuObj.Size = UDim2.fromOffset(maxSize + 20, menuObj.ListLayout.AbsoluteContentSize.Y)
 		menuObj.Position = UDim2.fromOffset(mouse().X, mouse().Y)
 
-        local function tween(obj, props)
+		local function tween(obj, props)
 			if tt[obj] ~= nil then tt[obj]:Pause() end
 			local tinfo = TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
 			local t = ts:Create(obj, tinfo, props)
 			t:Play()
 			tt[obj] = t
 		end
-		
-        local function show()
-            tween(menuObj, {BackgroundTransparency = 0})
-            for i,v in ipairs(options) do
-                tween(menuObj[v.Name], {TextTransparency = 0})
-            end
-        end
 
-        local function destroy()
-            tween(menuObj, {BackgroundTransparency = 1})
-            for i,v in ipairs(options) do
-                tween(menuObj[v.Name], {TextTransparency = 1})
-            end
-            wait(0.5)
-            menuObj:Destroy()
-        end
+		local function show()
+			tween(menuObj, {BackgroundTransparency = 0})
+			for i,v in ipairs(options) do
+				tween(menuObj[v.Name], {TextTransparency = 0})
+			end
+		end
 
-        show()
-        wait(0.1)
+		local function destroy()
+			tween(menuObj, {BackgroundTransparency = 1})
+			for i,v in ipairs(options) do
+				tween(menuObj[v.Name], {TextTransparency = 1})
+			end
+			wait(0.5)
+			menuObj:Destroy()
+		end
 
-        local connection1
-        local connection2
+		show()
+		wait(0.1)
+
+		local connection1
+		local connection2
 
 		connection1 = uis.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                destroy()
-                connection1:Disconnect()
-                connection2:Disconnect()
-            end
-        end)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+				destroy()
+				connection1:Disconnect()
+				connection2:Disconnect()
+			end
+		end)
 
-        connection2 = uis.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton2 then
-                destroy()
-                connection1:Disconnect()
-                connection2:Disconnect()
-            end
-        end)
+		connection2 = uis.InputBegan:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton2 then
+				destroy()
+				connection1:Disconnect()
+				connection2:Disconnect()
+			end
+		end)
 	end
 
 	local function selectTab(tabName)
@@ -1119,6 +1212,116 @@ lib.new = function(config)
 		t:Play()
 		tt[tContainer] = t
 	end
+	
+	-- Palette
+	
+	local Palette = {isMouseOnPalette = false, lock = false}
+	
+	local paletteObj : Frame = elementCreate.palette()
+	paletteObj.Parent = gui
+	
+	local paletteCurrentCallback = function() end
+	
+	Palette.Init = function()
+		local ValImg : Frame = paletteObj.ValImg
+		local HueSatImg : ImageLabel = paletteObj.HueSatImg
+		local Cursor = HueSatImg.Cursor
+		local Arrow = ValImg.Arrow
+		
+		local Color = {0, 0, 1}
+		
+		local SettingValue = false
+		local SettingHueSat = false
+		
+		paletteObj.MouseEnter:Connect(function()
+			Palette.isMouseOnPalette = true
+		end)
+		
+		paletteObj.MouseLeave:Connect(function()
+			Palette.isMouseOnPalette = false
+		end)
+		
+		uis.InputEnded:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+				if not Palette.isMouseOnPalette and paletteObj.Visible and not Palette.lock then
+					SettingValue = false
+					SettingHueSat = false
+					paletteObj.Visible = false
+					paletteObj.Position = UDim2.new(-1, 0, -1, 0)
+				end
+			end
+		end)
+		
+		ValImg.InputBegan:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+				SettingValue = true
+			end
+		end)
+		
+		ValImg.InputEnded:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+				SettingValue = false
+			end
+		end)
+		
+		HueSatImg.InputBegan:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+				SettingHueSat = true
+			end
+		end)
+
+		HueSatImg.InputEnded:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+				SettingHueSat = false
+			end
+		end)
+
+        uis.InputChanged:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseMovement then
+                if SettingValue then
+                    local Value = math.clamp((ValImg.AbsolutePosition.Y - input.Position.Y + ValImg.AbsoluteSize.Y) / ValImg.AbsoluteSize.Y, 0, 1)
+                    Arrow.Position = UDim2.new(1, 0, math.clamp((input.Position.Y - ValImg.AbsolutePosition.Y) / ValImg.AbsoluteSize.Y, 0, 1), 0)
+                    Color[3] = Value
+                    paletteCurrentCallback(Color3.fromHSV(Color[1], Color[2], Color[3]))
+                end
+                if SettingHueSat then
+                    local Hue = math.clamp((HueSatImg.AbsolutePosition.X - input.Position.X + HueSatImg.AbsoluteSize.X) / HueSatImg.AbsoluteSize.X, 0, 1)
+                    local Sat = math.clamp((HueSatImg.AbsolutePosition.Y - input.Position.Y + HueSatImg.AbsoluteSize.Y) / HueSatImg.AbsoluteSize.Y, 0, 1)
+                    Cursor.Position = UDim2.new(math.clamp((input.Position.x - HueSatImg.AbsolutePosition.x) / HueSatImg.AbsoluteSize.X, 0, 1), 0, math.clamp((input.Position.Y - HueSatImg.AbsolutePosition.Y) / HueSatImg.AbsoluteSize.Y, 0, 1), 0)
+                    Color[1] = Hue
+                    Color[2] = Sat
+                    
+                    ValImg.BackgroundColor3 = Color3.fromHSV(Hue, Sat, 1)
+                    paletteCurrentCallback(Color3.fromHSV(Color[1], Color[2], Color[3]))
+                end
+            end
+        end)
+	end
+	
+	Palette.SetColor = function(color)
+		local h,s,v = Color3.toHSV(color)
+		
+		local ValImg : Frame = paletteObj.ValImg
+		local HueSatImg : ImageLabel = paletteObj.HueSatImg
+		local Cursor = HueSatImg.Cursor
+		local Arrow = ValImg.Arrow
+		
+		ValImg.BackgroundColor3 = Color3.fromHSV(h, s, 1)
+		Arrow.Position = UDim2.new(1, 0, 1 - v, 0)
+		
+		Cursor.Position = UDim2.new(1 - h, 0, 1 - s, 0)
+	end
+	
+	Palette.Show = function(position, callback)
+        Palette.lock = true
+		paletteObj.Visible = true
+		paletteObj.Position = position
+		paletteCurrentCallback = callback
+        wait(.1)
+        Palette.lock = false
+	end
+
+    Palette.Init()
 
 	libNew.addTab = function(tabName)
 		local addTab = {}
@@ -1336,10 +1539,10 @@ lib.new = function(config)
 					local function disconnect()
 						inputconnection:Disconnect()
 					end
-                    local msgbox = messageBox("Keybind ("..button.Text..") ["..keybindtext.."]", "Press key to bind...", {"Cancel"}, function()
-                        binding = false
-                        disconnect()
-                    end)
+					local msgbox = messageBox("Keybind ("..button.Text..") ["..keybindtext.."]", "Press key to bind...", {"Cancel"}, function()
+						binding = false
+						disconnect()
+					end)
 					inputconnection = uis.InputEnded:Connect(function(input)
 						if disconnecting then return end
 						if input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode ~= Enum.KeyCode.LeftControl and not uis:GetFocusedTextBox() then
@@ -1364,67 +1567,67 @@ lib.new = function(config)
 				button.MouseButton2Down:Connect(function()
 					if info ~= nil then
 						if keybind ~= nil then
-                            showMenu({
-                                {
-                                    Name = "Info",
-                                    Callback = function()
-                                        messageBox(buttonText, info, {"Ok"})
-                                    end
-                                },
-                                {
-                                    Name = "Set Keybind",
-                                    Callback = function()
-                                        startBinding()
-                                    end
-                                },
-                                {
-                                    Name = "Remove Keybind",
-                                    Callback = function()
-                                        keybind = nil
-                                    end
-                                }
-                            })
+							showMenu({
+								{
+									Name = "Info",
+									Callback = function()
+										messageBox(buttonText, info, {"Ok"})
+									end
+								},
+								{
+									Name = "Set Keybind",
+									Callback = function()
+										startBinding()
+									end
+								},
+								{
+									Name = "Remove Keybind",
+									Callback = function()
+										keybind = nil
+									end
+								}
+							})
 						else
-                            showMenu({
-                                {
-                                    Name = "Info",
-                                    Callback = function()
-                                        messageBox(buttonText, info, {"Ok"})
-                                    end
-                                },
-                                {
-                                    Name = "Set Keybind",
-                                    Callback = function()
-                                        startBinding()
-                                    end
-                                }
-                            })
+							showMenu({
+								{
+									Name = "Info",
+									Callback = function()
+										messageBox(buttonText, info, {"Ok"})
+									end
+								},
+								{
+									Name = "Set Keybind",
+									Callback = function()
+										startBinding()
+									end
+								}
+							})
 						end
 					else
 						if keybind ~= nil then
-                            showMenu({
-                                {
-                                    Name = "Set Keybind",
-                                    Callback = function()
-                                        startBinding()
-                                    end
-                                },
-                                {
-                                    Name = "Remove Keybind",
-                                    Callback = function()
-                                        keybind = nil
-                                    end
-                                }
-                            })
+							showMenu({
+								{
+									Name = "Set Keybind",
+									Callback = function()
+										startBinding()
+									end
+								},
+								{
+									Name = "Remove Keybind",
+									Callback = function()
+										keybind = nil
+									end
+								}
+							})
 						else
-                            showMenu({
-                                {
-                                    Name = "Set Keybind",
-                                    Callback = function()
-                                        startBinding()
-                                    end
-                                }
-                            })
+							showMenu({
+								{
+									Name = "Set Keybind",
+									Callback = function()
+										startBinding()
+									end
+								}
+							})
 						end
 					end
 				end)
@@ -1562,108 +1765,108 @@ lib.new = function(config)
 				local keybind = nil
 				local binding = false
 
-                local function startBinding()
-                    binding = true
-                    local keybindtext
-                    if keybind == nil then
-                        keybindtext = "NONE"
-                    else
-                        keybindtext = keybind.Name
-                    end
-                    local disconnecting = false
-                    local inputconnection
-                    local function disconnect()
-                        inputconnection:Disconnect()
-                    end
-                    local msgbox = messageBox("Keybind ("..toggle.Text..") ["..keybindtext.."]", "Press key to bind...", {"Cancel"}, function()
-                        binding = false
-                        disconnect()
-                    end)
-                    inputconnection = uis.InputEnded:Connect(function(input)
-                        if disconnecting then return end
-                        if input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode ~= Enum.KeyCode.LeftControl and not uis:GetFocusedTextBox() then
-                            local blacklist = {"W","A","S","D","Slash","Tab","Backspace","Escape","Space","Delete","Unknown","Backquote"}
-                            local blacklisted = table.find(blacklist, input.KeyCode.Name) and true or false
-                            disconnecting = true
-                            if blacklisted then
-                                keybind = nil
-                            else
-                                keybind = input.KeyCode
-                            end
-                            local keybindName = keybind and keybind.Name or "NONE"
-                            msgbox.editText("Binded: ["..keybindName.."]")
-                            wait(1)
-                            msgbox.hide()
-                            binding = false
-                            disconnect()
-                        end
-                    end)
-                end
+				local function startBinding()
+					binding = true
+					local keybindtext
+					if keybind == nil then
+						keybindtext = "NONE"
+					else
+						keybindtext = keybind.Name
+					end
+					local disconnecting = false
+					local inputconnection
+					local function disconnect()
+						inputconnection:Disconnect()
+					end
+					local msgbox = messageBox("Keybind ("..toggle.Text..") ["..keybindtext.."]", "Press key to bind...", {"Cancel"}, function()
+						binding = false
+						disconnect()
+					end)
+					inputconnection = uis.InputEnded:Connect(function(input)
+						if disconnecting then return end
+						if input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode ~= Enum.KeyCode.LeftControl and not uis:GetFocusedTextBox() then
+							local blacklist = {"W","A","S","D","Slash","Tab","Backspace","Escape","Space","Delete","Unknown","Backquote"}
+							local blacklisted = table.find(blacklist, input.KeyCode.Name) and true or false
+							disconnecting = true
+							if blacklisted then
+								keybind = nil
+							else
+								keybind = input.KeyCode
+							end
+							local keybindName = keybind and keybind.Name or "NONE"
+							msgbox.editText("Binded: ["..keybindName.."]")
+							wait(1)
+							msgbox.hide()
+							binding = false
+							disconnect()
+						end
+					end)
+				end
 
-                toggle.MouseButton2Down:Connect(function()
+				toggle.MouseButton2Down:Connect(function()
 					if info ~= nil then
 						if keybind ~= nil then
-                            showMenu({
-                                {
-                                    Name = "Info",
-                                    Callback = function()
-                                        messageBox(toggleName, info, {"Ok"})
-                                    end
-                                },
-                                {
-                                    Name = "Set Keybind",
-                                    Callback = function()
-                                        startBinding()
-                                    end
-                                },
-                                {
-                                    Name = "Remove Keybind",
-                                    Callback = function()
-                                        keybind = nil
-                                    end
-                                }
-                            })
+							showMenu({
+								{
+									Name = "Info",
+									Callback = function()
+										messageBox(toggleName, info, {"Ok"})
+									end
+								},
+								{
+									Name = "Set Keybind",
+									Callback = function()
+										startBinding()
+									end
+								},
+								{
+									Name = "Remove Keybind",
+									Callback = function()
+										keybind = nil
+									end
+								}
+							})
 						else
-                            showMenu({
-                                {
-                                    Name = "Info",
-                                    Callback = function()
-                                        messageBox(toggleName, info, {"Ok"})
-                                    end
-                                },
-                                {
-                                    Name = "Set Keybind",
-                                    Callback = function()
-                                        startBinding()
-                                    end
-                                }
-                            })
+							showMenu({
+								{
+									Name = "Info",
+									Callback = function()
+										messageBox(toggleName, info, {"Ok"})
+									end
+								},
+								{
+									Name = "Set Keybind",
+									Callback = function()
+										startBinding()
+									end
+								}
+							})
 						end
 					else
 						if keybind ~= nil then
-                            showMenu({
-                                {
-                                    Name = "Set Keybind",
-                                    Callback = function()
-                                        startBinding()
-                                    end
-                                },
-                                {
-                                    Name = "Remove Keybind",
-                                    Callback = function()
-                                        keybind = nil
-                                    end
-                                }
-                            })
+							showMenu({
+								{
+									Name = "Set Keybind",
+									Callback = function()
+										startBinding()
+									end
+								},
+								{
+									Name = "Remove Keybind",
+									Callback = function()
+										keybind = nil
+									end
+								}
+							})
 						else
-                            showMenu({
-                                {
-                                    Name = "Set Keybind",
-                                    Callback = function()
-                                        startBinding()
-                                    end
-                                }
-                            })
+							showMenu({
+								{
+									Name = "Set Keybind",
+									Callback = function()
+										startBinding()
+									end
+								}
+							})
 						end
 					end
 				end)
@@ -1812,7 +2015,7 @@ lib.new = function(config)
 				local decimals = args.decimals
 				local suffix = args.suffix
 				local sliderCallback = args.callback or function() end
-				
+
 
 				local addSlider = {}
 
@@ -1939,7 +2142,7 @@ lib.new = function(config)
 
 				return addSlider
 			end
-			
+
 			addSection.addDropdown = function(args)
 				local dropdownName = args.name
 				local options = args.options
@@ -1950,13 +2153,13 @@ lib.new = function(config)
 				local addDropdown = {}
 
 				local currentVal = initVal or nil
-				
+
 				local Dropdown = elementCreate.dropdown()
 				local DropdownContainer = Dropdown.Container.Container
-				
+
 				Dropdown.Name = dropdownName
 				Dropdown.Parent = sectionContainer
-				
+
 				if #dropdownName > 20 or string.find(dropdownName, "\n") then
 					Dropdown.DropdownName.Text = dropdownName:sub(1, 26).."..."
 				else
@@ -1968,10 +2171,10 @@ lib.new = function(config)
 				if #dropdownName > 26 or string.find(dropdownName, "\n") then
 					dropdownTooltip = addTooltip(Dropdown.DropdownName, dropdownName)
 				end
-				
+
 				local opened = false
 				local containerSizeY = 200
-				
+
 				DropdownContainer.ListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 					containerSizeY = math.clamp(DropdownContainer.ListLayout.AbsoluteContentSize.Y, 0, 200)
 					DropdownContainer.Parent.Size = UDim2.new(0, 170, 0, math.clamp(DropdownContainer.ListLayout.AbsoluteContentSize.Y, 0, 200))
@@ -1984,7 +2187,7 @@ lib.new = function(config)
 				local function cleanSearchBox()
 					DropdownContainer._SearchBox.Text = ""
 				end
-				
+
 				local function open()
 					cleanSearchBox()
 					if tt[Dropdown] ~= nil then tt[Dropdown]:Pause() end
@@ -1997,7 +2200,7 @@ lib.new = function(config)
 					DropdownContainer._SearchBox:CaptureFocus()
 					opened = true
 				end
-				
+
 				local function close()
 					if tt[Dropdown] ~= nil then tt[Dropdown]:Pause() end
 					if tt[Dropdown.Toggle.Arrow] ~= nil then tt[Dropdown.Toggle.Arrow]:Pause() end
@@ -2008,7 +2211,7 @@ lib.new = function(config)
 					t2:Play()
 					opened = false
 				end
-				
+
 				Dropdown.Toggle.MouseButton1Click:Connect(function()
 					if opened then
 						close()
@@ -2016,7 +2219,7 @@ lib.new = function(config)
 						open()
 					end
 				end)
-				
+
 				DropdownContainer._SearchBox.Changed:Connect(function(prop)
 					if prop == "Text" then
 						if #DropdownContainer._SearchBox.Text > 0 then
@@ -2036,16 +2239,16 @@ lib.new = function(config)
 						end
 					end
 				end)
-				
+
 				local selected = {}
-				
+
 				for i,v in pairs(options) do
 					local option = elementCreate.dropdownOption()
-					
+
 					option.Name = v
 					option.Parent = DropdownContainer
 					option.Text = v
-					
+
 					if multiSelect then
 						if initVal and table.find(initVal, v) then
 							option.TextColor3 = lib.settings.uiColor
@@ -2058,7 +2261,7 @@ lib.new = function(config)
 							Dropdown.Toggle.Value.Text = v
 						end
 					end
-					
+
 					option.MouseButton1Click:Connect(function()
 						if multiSelect then
 							if table.find(selected, v) then
@@ -2109,8 +2312,60 @@ lib.new = function(config)
 						dropdownCallback(val)
 					end
 				end
-				
+
 				return addDropdown
+			end
+			
+			addSection.addColorpicker = function(args)
+				local addColorpicker = {}
+				
+				local Name = args.Name
+				local Color = args.DefaultColor or Color3.fromHSV(1, 0, 1)
+				local Callback = args.Callback
+				
+				local Colorpicker = elementCreate.colorpicker()
+				
+				Colorpicker.Name = Name
+				Colorpicker.Parent = sectionContainer
+				Colorpicker.Toggle.BackgroundColor3 = Color
+				
+				if #Name > 20 or string.find(Name, "\n") then
+					Colorpicker.Text = Name:sub(1, 26).."..."
+				else
+					Colorpicker.Text = Name
+				end
+
+				local colorpickerTooltip
+
+				if #Name > 26 or string.find(Name, "\n") then
+					colorpickerTooltip = addTooltip(Colorpicker, Name)
+				end
+
+                Colorpicker.MouseButton1Down:Connect(function()
+                    Palette.lock = true
+                end)
+				
+				Colorpicker.Toggle.MouseButton1Click:Connect(function()
+					Palette.SetColor(Color)
+					Palette.Show(UDim2.new(0, Colorpicker.Toggle.AbsolutePosition.X - paletteObj.AbsoluteSize.X + Colorpicker.Toggle.AbsoluteSize.X, 0, Colorpicker.Toggle.AbsolutePosition.Y + Colorpicker.Toggle.AbsoluteSize.Y + 4), function(color)
+						Color = color
+						Colorpicker.Toggle.BackgroundColor3 = color
+						Callback(color)
+					end)
+				end)
+
+                addColorpicker.get = function()
+                    local h, s, v = Color3.toHSV(Color)
+                    return {h, s, v}
+                end
+
+                addColorpicker.set = function(color)
+                    Color = Color3.fromHSV(color[1], color[2], color[3])
+                    Colorpicker.Toggle.BackgroundColor3 = Color
+                    Callback(Color)
+                end
+				
+				return addColorpicker
 			end
 
 			addSection.addLine = function()
