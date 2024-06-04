@@ -2320,9 +2320,9 @@ lib.new = function(config)
 			addSection.addColorpicker = function(args)
 				local addColorpicker = {}
 				
-				local Name = args.Name
-				local Color = args.DefaultColor or Color3.fromHSV(1, 0, 1)
-				local Callback = args.Callback
+				local Name = args.name
+				local Color = args.defaultColor or Color3.fromHSV(1, 0, 1)
+				local Callback = args.callback
 				
 				local Colorpicker = elementCreate.colorpicker()
 				
