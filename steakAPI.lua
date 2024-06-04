@@ -6,14 +6,13 @@
 ╚════██║   ██║   ██╔══╝  ██╔══██║██╔═██╗     ██╔══██║██╔═══╝ ██║
 ███████║   ██║   ███████╗██║  ██║██║  ██╗    ██║  ██║██║     ██║ 
 ╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝    ╚═╝  ╚═╝╚═╝     ╚═╝
-                                                      By 0xSteak
-                          Discord: steak#8439/449784566325182474                              
+                                                      By 0xSteak                              
 ]]
 
 local reload = false
 
 if not pcall(getgenv) then warn("getgenv is required") return 0 end
-if not pcall(setreadonly, {}, false) then warn("setreadonly is required") return 0 end
+--if not pcall(setreadonly, {}, false) then warn("setreadonly is required") return 0 end
 if getgenv().steakloaded then reload = true end
 
 Steak = {
@@ -76,11 +75,11 @@ end
 --Upgrading globals
 
 --Unlocking
-setreadonly(Instance, false)
-setreadonly(string, false)
+--setreadonly(Instance, false)
+--setreadonly(string, false)
 
 --Upgrading
-Instance.cr = function(class, props)
+--[[Instance.cr = function(class, props)
 	local instance = Instance.new(class)
 	for i,v in pairs(props) do
 		instance[i] = v
@@ -135,27 +134,6 @@ string.time = function(timenum, zeroText)
 		return zeroText
 	end
 	return str
-end
---[[math.mirror = function(num, min, max)
-	if num < min then
-		error("SteakAPI: Number can't be lower than minimal number")
-	end
-	if num > max then
-		error("SteakAPI: Number can't be bigger than maximal number")
-	end
-	if min == max then
-		error("SteakAPI: Minimal and Maximal numbers can't be equal")
-	end
-	local half = (min + max) / 2
-	if num < half then
-		return half + (num - half)
-	elseif num > half then
-		return half - (num - half)
-	elseif num == half then
-		return half
-	else
-		warn("SteakAPI: Unknown error")
-	end
 end
 ]]
 
@@ -466,14 +444,14 @@ Steak.rejoin = function()
 	game:GetService("TeleportService"):Teleport(game.PlaceId)
 end
 
-setreadonly(Instance, true)
-setreadonly(string, true)
+--setreadonly(Instance, true)
+--setreadonly(string, true)
 
 if Steak.studio then
 	if Steak.reload then
-		game:GetService('TestService'):Message("Steak Utilities reloaded")
+		game:GetService('TestService'):Message("Steak API reloaded")
 	else
-		game:GetService('TestService'):Message("Steak Utilities loaded")
+		game:GetService('TestService'):Message("Steak API loaded")
 	end
 	_G.steakloaded = true
 	return Steak
