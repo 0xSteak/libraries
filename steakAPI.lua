@@ -80,14 +80,14 @@ end
 --setreadonly(string, false)
 
 --Upgrading
---[[Instance.cr = function(class, props)
+Steak.cr = function(class, props)
 	local instance = Instance.new(class)
 	for i,v in pairs(props) do
 		instance[i] = v
 	end
 	return instance
 end
-string.time = function(timenum, zeroText)
+--[[string.time = function(timenum, zeroText)
 	local days = math.floor(timenum / 86400)
 	local hours = math.floor(timenum / 3600 - days * 24)
 	local minutes = math.floor(timenum / 60 - days * 1440 - hours * 60)
@@ -141,7 +141,7 @@ end
 if workspace:FindFirstChild("SteakAPI") then
 	Steak.Folder = Steak.ws():FindFirstChild("SteakAPI")
 else
-	Steak.Folder = Instance.cr("Folder", {
+	Steak.Folder = Steak.cr("Folder", {
 		Name = "SteakAPI",
 		Parent = Steak.ws()
 	})
