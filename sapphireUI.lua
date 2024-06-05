@@ -255,13 +255,14 @@ elementCreate.messageBox = function()
 			Name = "Label",
 			BackgroundTransparency = 1,
 			Position = UDim2.new(0.5, 0, 0, 62),
-			Size = UDim2.new(1, 0, 0.492, 0),
+			Size = UDim2.new(0.9, 0, 0.492, 0),
 			FontFace = Font.new("rbxasset://fonts/families/Ubuntu.json"),
 			Text = "text",
 			TextColor3 = Color3.fromRGB(255, 255, 255),
 			TextSize = 14,
 			TextXAlignment = Enum.TextXAlignment.Center,
 			TextYAlignment = Enum.TextYAlignment.Center,
+			TextWrapped = true,
 			ZIndex = 2,
 			TextTransparency = 1
 		}),
@@ -1039,7 +1040,7 @@ lib.new = function(config)
 				button.Parent = element.ButtonContainer
 				button.AnchorPoint = Vector2.new(0.5, 0.5)
 				button.Text = title
-				button.Size = UDim2.new(0, 75, 0, 25)
+				button.Size = UDim2.new(0, math.clamp(button.TextBounds + 10, 75, 999), 0, 25)
 				button.BackgroundTransparency = 1
 				button.TextTransparency = 1
 
