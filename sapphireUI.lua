@@ -945,9 +945,9 @@ lib.new = function(config)
 	topIcon.ImageColor3 = lib.settings.uiColor
 	topTitle.Text = config.name
 
-	tContainer.ListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+	--[[tContainer.ListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 		tContainer.CanvasSize = UDim2.new(0, 0, 0, tContainer.ListLayout.AbsoluteContentSize.Y)
-	end)
+	end)]]
 
 	local function addTooltip(obj, text)
 		local a = obj.MouseEnter:Connect(function()
