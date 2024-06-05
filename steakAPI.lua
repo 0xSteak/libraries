@@ -83,7 +83,11 @@ end
 Steak.cr = function(class, props)
 	local instance = Instance.new(class)
 	for i,v in pairs(props) do
-		instance[i] = v
+		if typeof(v) == "Instance" and i ~= "Parent" then
+			v.Parent = instance
+		else
+			instance[i] = v
+		end
 	end
 	return instance
 end
