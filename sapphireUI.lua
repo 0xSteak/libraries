@@ -98,7 +98,7 @@ elementCreate.mainObjects = function()
 		create("Frame", {
 			Name = "MainWindow",
 			BackgroundColor3 = Color3.fromRGB(20, 20, 20),
-			Position = UDim2.new(0.5, -283, 0.5, -227),
+			Position = UDim2.new(0.5, -283, not uis.TouchEnabled and 0.5 or 0, -227),
 			Size = UDim2.new(0, 566, 0, 455),
 			create("UICorner", {CornerRadius = UDim.new(0, 10)}),
 			create("Frame", {
