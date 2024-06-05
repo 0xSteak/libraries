@@ -1356,6 +1356,12 @@ lib.new = function(config)
 
     Palette.Init()
 
+	uis.InputEnded:Connect(function(i, gpe)
+		if i.KeyCode == Enum.KeyCode.RightControl and not gpe then
+			gui.Enabled = not gui.Enabled
+		end
+	end)
+
 	libNew.addTab = function(tabName)
 		local addTab = {}
 
