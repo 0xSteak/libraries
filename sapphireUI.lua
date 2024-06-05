@@ -1243,7 +1243,7 @@ lib.new = function(config)
 		end)
 		
 		uis.InputEnded:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 				if not Palette.isMouseOnPalette and paletteObj.Visible and not Palette.lock then
 					SettingValue = false
 					SettingHueSat = false
@@ -1254,31 +1254,35 @@ lib.new = function(config)
 		end)
 		
 		ValImg.InputBegan:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+				Palette.isMouseOnPalette = true
 				SettingValue = true
 			end
 		end)
 		
 		ValImg.InputEnded:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+				Palette.isMouseOnPalette = false
 				SettingValue = false
 			end
 		end)
 		
 		HueSatImg.InputBegan:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+				Palette.isMouseOnPalette = true
 				SettingHueSat = true
 			end
 		end)
 
 		HueSatImg.InputEnded:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+				Palette.isMouseOnPalette = false
 				SettingHueSat = false
 			end
 		end)
 
         uis.InputChanged:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseMovement then
+            if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
                 if SettingValue then
                     local Value = math.clamp((ValImg.AbsolutePosition.Y - input.Position.Y + ValImg.AbsoluteSize.Y) / ValImg.AbsoluteSize.Y, 0, 1)
                     Arrow.Position = UDim2.new(1, 0, math.clamp((input.Position.Y - ValImg.AbsolutePosition.Y) / ValImg.AbsoluteSize.Y, 0, 1), 0)
@@ -2056,7 +2060,7 @@ lib.new = function(config)
 				local Sliding = false
 
 				SliderMain.SliderBorder.InputBegan:Connect(function(i)
-					if i.UserInputType == Enum.UserInputType.MouseButton1 then
+					if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
 						Sliding = true
 						local Position = UDim2.new(math.clamp((i.Position.X - SliderMain.SliderBorder.AbsolutePosition.X) / SliderMain.SliderBorder.AbsoluteSize.X, 0, 1), 0, 0, 6)
 						if tt[Slider] ~= nil then tt[Slider]:Pause() end
@@ -2071,14 +2075,14 @@ lib.new = function(config)
 				end)
 
 				SliderMain.SliderBorder.InputEnded:Connect(function(i)
-					if i.UserInputType == Enum.UserInputType.MouseButton1 then
+					if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
 						Sliding = false
 						sliderCallback(GlobalSliderValue)
 					end
 				end)
 
 				uis.InputChanged:Connect(function(i)
-					if i.UserInputType == Enum.UserInputType.MouseMovement then
+					if i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch then
 						if Sliding then
 							local Position = UDim2.new(math.clamp((i.Position.X - SliderMain.SliderBorder.AbsolutePosition.X) / SliderMain.SliderBorder.AbsoluteSize.X, 0, 1), 0, 0, 6)
 							if tt[Slider] ~= nil then tt[Slider]:Pause() end
