@@ -1271,6 +1271,11 @@ lib.new = function(config)
 			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 				Palette.isMouseOnPalette = false
 				SettingValue = false
+				
+				local Value = math.clamp((ValImg.AbsolutePosition.Y - input.Position.Y + ValImg.AbsoluteSize.Y) / ValImg.AbsoluteSize.Y, 0, 1)
+				Arrow.Position = UDim2.new(1, 0, math.clamp((input.Position.Y - ValImg.AbsolutePosition.Y) / ValImg.AbsoluteSize.Y, 0, 1), 0)
+				Color[3] = Value
+				paletteCurrentCallback(Color3.fromHSV(Color[1], Color[2], Color[3]))
 			end
 		end)
 		
@@ -1278,6 +1283,15 @@ lib.new = function(config)
 			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 				Palette.isMouseOnPalette = true
 				SettingHueSat = true
+
+				local Hue = math.clamp((HueSatImg.AbsolutePosition.X - input.Position.X + HueSatImg.AbsoluteSize.X) / HueSatImg.AbsoluteSize.X, 0, 1)
+				local Sat = math.clamp((HueSatImg.AbsolutePosition.Y - input.Position.Y + HueSatImg.AbsoluteSize.Y) / HueSatImg.AbsoluteSize.Y, 0, 1)
+				Cursor.Position = UDim2.new(math.clamp((input.Position.x - HueSatImg.AbsolutePosition.x) / HueSatImg.AbsoluteSize.X, 0, 1), 0, math.clamp((input.Position.Y - HueSatImg.AbsolutePosition.Y) / HueSatImg.AbsoluteSize.Y, 0, 1), 0)
+				Color[1] = Hue
+				Color[2] = Sat
+				
+				ValImg.BackgroundColor3 = Color3.fromHSV(Hue, Sat, 1)
+				paletteCurrentCallback(Color3.fromHSV(Color[1], Color[2], Color[3]))
 			end
 		end)
 
