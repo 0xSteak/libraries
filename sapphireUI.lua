@@ -1242,7 +1242,7 @@ lib.new = function(config)
 			Palette.isMouseOnPalette = false
 		end)
 		
-		uis.InputEnded:Connect(function(input)
+		--[[uis.InputEnded:Connect(function(input)
 			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 				if not Palette.isMouseOnPalette and paletteObj.Visible and not Palette.lock then
 					SettingValue = false
@@ -1251,7 +1251,7 @@ lib.new = function(config)
 					paletteObj.Position = UDim2.new(-1, 0, -1, 0)
 				end
 			end
-		end)
+		end)]]
 		
 		ValImg.InputBegan:Connect(function(input)
 			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
@@ -1318,6 +1318,13 @@ lib.new = function(config)
 	end
 	
 	Palette.Show = function(position, callback)
+		if paletteObj.Visible then
+			SettingValue = false
+			SettingHueSat = false
+			paletteObj.Visible = false
+			paletteObj.Position = UDim2.new(-1, 0, -1, 0)
+			return
+		end
         Palette.lock = true
 		paletteObj.Visible = true
 		paletteObj.Position = position
@@ -2346,9 +2353,9 @@ lib.new = function(config)
 					colorpickerTooltip = addTooltip(Colorpicker, Name)
 				end
 
-                Colorpicker.MouseButton1Down:Connect(function()
+               --[[ Colorpicker.MouseButton1Down:Connect(function()
                     Palette.lock = true
-                end)
+                end)]]
 				
 				Colorpicker.Toggle.MouseButton1Click:Connect(function()
 					Palette.SetColor(Color)
