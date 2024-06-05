@@ -1,7 +1,6 @@
 local lib = {
 	settings = {
 		dontEnterTextFields = true,
-		showAtStart = true,
 		keybinds = true,
 		uiColor = Color3.fromRGB(52, 146, 235),
 		theme = 0
@@ -789,9 +788,6 @@ lib.new = function(config)
 		if config.settings.dontEnterTextFields ~= nil then
 			lib.settings.dontEnterTextFields = config.settings.dontEnterTextFields
 		end
-		if config.settings.showAtStart ~= nil then
-			lib.settings.showAtStart = config.settings.showAtStart
-		end
 		if config.settings.keybinds ~= nil then
 			lib.settings.keybinds = config.settings.keybinds
 		end
@@ -928,7 +924,10 @@ lib.new = function(config)
 	setTheme(lib.settings.theme)
 
 	gui.Name = randomString(30)
-	if not lib.settings.showAtStart then
+	if config.showAtStart == nil then
+		config.showAtStart = true
+	end
+	if not config.showAtStart then
 		gui.Enabled = false
 		libNew.show = function()
 			gui.Enabled = true
