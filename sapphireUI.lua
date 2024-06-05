@@ -175,21 +175,27 @@ elementCreate.mainObjects = function()
 					PaddingTop = UDim.new(0, 10)
 				})
 			}),
-			create("ScrollingFrame", {
+			create("Frame", {
 				Name = "TContainer",
 				BackgroundTransparency = 1,
 				Position = UDim2.new(0, 166, 0, 30),
 				Size = UDim2.new(0, 400, 0, 425),
-				CanvasSize = UDim2.new(0, 0, 0, 0),
-				ScrollBarThickness = 0,
-				ScrollingEnabled = false,
-				create("UIListLayout", {
-					Name = "ListLayout",
+				ClipsDescendants = true,
+				create("UIPageLayout", {
+					Name = "_PageLayout",
 					SortOrder = Enum.SortOrder.LayoutOrder,
 					Padding = UDim.new(0, 0),
 					FillDirection = Enum.FillDirection.Vertical,
 					HorizontalAlignment = Enum.HorizontalAlignment.Center,
-					VerticalAlignment = Enum.VerticalAlignment.Top
+					VerticalAlignment = Enum.VerticalAlignment.Top,
+					GamepadInputEnabled = false,
+					ScrollWheelInputEnabled = false,
+					TouchInputEnabled = false,
+					Animated = true,
+					Circular = false,
+					EasingDirection = Enum.EasingDirection.Out,
+					EasingStyle = Enum.EasingStyle.Quint,
+					TweenTime = 0.5,
 				})
 			}),
 			create("Frame", {
@@ -1207,11 +1213,12 @@ lib.new = function(config)
 				end
 			end
 		end
-		if tt[tContainer] ~= nil then tt[tContainer]:Pause() end
+		--[[if tt[tContainer] ~= nil then tt[tContainer]:Pause() end
 		local tinfo = TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
 		local t = ts:Create(tContainer, tinfo, {CanvasPosition = Vector2.new(0, 425 * tContainer[tabName].LayoutOrder)})
 		t:Play()
-		tt[tContainer] = t
+		tt[tContainer] = t]]
+		tContainer._PageLayout:JumpTo(tContainer[tabName])
 	end
 	
 	-- Palette
