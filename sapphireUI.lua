@@ -1040,7 +1040,7 @@ lib.new = function(config)
 				button.Parent = element.ButtonContainer
 				button.AnchorPoint = Vector2.new(0.5, 0.5)
 				button.Text = title
-				button.Size = UDim2.new(0, math.clamp(button.TextBounds + 10, 75, 999), 0, 25)
+				button.Size = UDim2.new(0, math.clamp(button.TextBounds.X + 10, 75, 999), 0, 25)
 				button.BackgroundTransparency = 1
 				button.TextTransparency = 1
 
