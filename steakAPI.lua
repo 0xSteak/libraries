@@ -467,4 +467,4 @@ else
 	getgenv().steakloaded = true
 end
 
-getgenv().Steak = Steak
+return Steak
