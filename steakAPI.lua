@@ -460,9 +460,11 @@ else
 	getgenv().Steak = Steak
 	--setreadonly(getgenv().Steak, true)
 	if Steak.reload then
-		game:GetService('TestService'):Message("Steak Utilities reloaded")
+		game:GetService('TestService'):Message("Steak API reloaded")
 	else
-		game:GetService('TestService'):Message("Steak Utilities loaded")
+		game:GetService('TestService'):Message("Steak API loaded")
 	end
 	getgenv().steakloaded = true
 end
+
+getgenv().Steak = Steak
