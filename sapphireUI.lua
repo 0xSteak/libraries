@@ -238,7 +238,7 @@ elementCreate.messageBox = function()
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			Name = "Top",
 			BackgroundTransparency = 1,
-			Position = UDim2.new(0.5, 0, 0.114, 15),
+			Position = UDim2.new(0.5, 0, 0.114, 0),
 			Size = UDim2.new(1, 0, 0.227, 0),
 			ZIndex = 2,
 			create("TextLabel", {
