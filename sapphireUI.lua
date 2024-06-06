@@ -238,19 +238,20 @@ elementCreate.messageBox = function()
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			Name = "Top",
 			BackgroundTransparency = 1,
-			Position = UDim2.new(0.5, 0, 0, 15),
-			Size = UDim2.new(1, 0, 0, 30),
+			Position = UDim2.new(0.5, 0, 0.114, 15),
+			Size = UDim2.new(1, 0, 0.227, 0),
 			ZIndex = 2,
 			create("TextLabel", {
 				AnchorPoint = Vector2.new(0.5, 0.5),
 				Name = "Title",
 				BackgroundTransparency = 1,
-				Position = UDim2.new(0, 142, 0, 15),
-				Size = UDim2.new(0, 265, 0, 30),
+				Position = UDim2.new(0.5, 0, 0.5, 0),
+				Size = UDim2.new(0.916, 0, 0.467, 0),
 				FontFace = Font.new("rbxasset://fonts/families/Ubuntu.json"),
 				Text = "caption",
 				TextColor3 = Color3.fromRGB(255, 255, 255),
 				TextSize = 14,
+				TextScaled = true,
 				TextXAlignment = Enum.TextXAlignment.Left,
 				ZIndex = 2,
 				TextTransparency = 1
@@ -260,7 +261,7 @@ elementCreate.messageBox = function()
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			Name = "Label",
 			BackgroundTransparency = 1,
-			Position = UDim2.new(0.5, 0, 0, 62),
+			Position = UDim2.new(0.5, 0, 0.473, 0),
 			Size = UDim2.new(0.9, 0, 0.492, 0),
 			FontFace = Font.new("rbxasset://fonts/families/Ubuntu.json"),
 			Text = "text",
@@ -276,8 +277,8 @@ elementCreate.messageBox = function()
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			Name = "ButtonContainer",
 			BackgroundTransparency = 1,
-			Position = UDim2.new(0.5, 0, 0, 107),
-			Size = UDim2.new(0, 275, 0, 25),
+			Position = UDim2.new(0.5, 0, 0.814, 0),
+			Size = UDim2.new(1, 0, 0.189, 0),
 			ZIndex = 2,
 			create("UIListLayout", {
 				Name = "ListLayout",
@@ -1010,7 +1011,7 @@ lib.new = function(config)
 		end
 
 		local function show()
-			element.Size = UDim2.new(0, 290, 0, 139)
+			element.Size = UDim2.new(0, 275 * 0.8, 0, 132 * 0.8)
 			tween(element, {Size = UDim2.new(0, 275, 0, 132), BackgroundTransparency = 0})
 			tween(mainWindow.BlackSolid, {BackgroundTransparency = 0.75})
 			tween(element.Top.Title, {TextTransparency = 0})
@@ -1024,7 +1025,7 @@ lib.new = function(config)
 
 		local function hide()
 			a = true
-			tween(element, {Size = UDim2.new(0, 290, 0, 139), BackgroundTransparency = 1})
+			tween(element, {Size = UDim2.new(0, 275 * 0.8, 0, 132 * 0.8), BackgroundTransparency = 1})
 			if not checkmessages() then tween(mainWindow.BlackSolid, {BackgroundTransparency = 1}) end
 			tween(element.Top.Title, {TextTransparency = 1})
 			tween(element.Label, {TextTransparency = 1})
@@ -1046,7 +1047,7 @@ lib.new = function(config)
 				button.Parent = element.ButtonContainer
 				button.AnchorPoint = Vector2.new(0.5, 0.5)
 				button.Text = title
-				button.Size = UDim2.new(0, math.clamp(button.TextBounds.X + 10, 75, 999), 0, 25)
+				button.Size = UDim2.new(math.clamp(button.TextBounds.X + 10, 75, 999) / element.ButtonContainer.AbsoluteSize.X, 0, 1, 0)
 				button.BackgroundTransparency = 1
 				button.TextTransparency = 1
 
@@ -1098,11 +1099,11 @@ lib.new = function(config)
 			end
 		end
 
-		for i,v in pairs(element:GetDescendants()) do
+		--[[for i,v in pairs(element:GetDescendants()) do
 			if v.ClassName ~= "UICorner" and v.ClassName ~= "UIListLayout" then
 				v.Size = UDim2.new(v.AbsoluteSize.X / v.Parent.AbsoluteSize.X, 0, v.AbsoluteSize.Y / v.Parent.AbsoluteSize.Y, 0)
 			end
-		end
+		end]]
 
 		show()
 
@@ -1229,6 +1230,9 @@ lib.new = function(config)
 	paletteObj.Parent = gui
 	
 	local paletteCurrentCallback = function() end
+
+	local SettingValue = false
+	local SettingHueSat = false
 	
 	Palette.Init = function()
 		local ValImg : Frame = paletteObj.ValImg
@@ -1237,9 +1241,6 @@ lib.new = function(config)
 		local Arrow = ValImg.Arrow
 		
 		local Color = {0, 0, 1}
-		
-		local SettingValue = false
-		local SettingHueSat = false
 		
 		paletteObj.MouseEnter:Connect(function()
 			Palette.isMouseOnPalette = true
