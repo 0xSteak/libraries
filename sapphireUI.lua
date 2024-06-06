@@ -2236,7 +2236,9 @@ lib.new = function(config)
 					local t2 = ts:Create(Dropdown.Toggle.Arrow, tinfo, {Rotation = 180})
 					t:Play()
 					t2:Play()
-					DropdownContainer._SearchBox:CaptureFocus()
+					if not uis.TouchEnabled then
+						DropdownContainer._SearchBox:CaptureFocus()
+					end
 					opened = true
 				end
 
