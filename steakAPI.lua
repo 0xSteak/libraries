@@ -198,7 +198,7 @@ end
 
 Steak.Hint = function(text, Time)
 	if Steak.cg():FindFirstChild("SteakHint") then Steak.cg():FindFirstChild("SteakHint"):Destroy() end
-	local Hint = Instance.cr("Hint", {
+	local Hint = Steak.cr("Hint", {
 		Name = "SteakHint",
 		Parent = Steak.cg(),
 		Text = text
@@ -340,7 +340,7 @@ end
 
 Steak.float = function()
 	if not Steak.ws():FindFirstChild("_FLOATPART") then
-		Instance.cr("Part", {
+		Steak.cr("Part", {
 			CanCollide = false,
 			Anchored = true,
 			Transparency = 1,
