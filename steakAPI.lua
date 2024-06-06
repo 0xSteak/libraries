@@ -345,7 +345,8 @@ Steak.float = function()
 			Anchored = true,
 			Transparency = 1,
 			Name = "_FLOATPART",
-			Parent = Steak.ws()
+			Parent = Steak.ws(),
+			Size = Vector3.new(3, 0.5, 3)
 		})
 	end
 	local floatfunc = {}
