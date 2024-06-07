@@ -951,13 +951,29 @@ lib.new = function(config)
 	end)]]
 
 	local function addTooltip(obj, text)
-		local a = obj.MouseEnter:Connect(function()
-			tooltip.Text = text
-			tooltip.Visible = true
-		end)
-		local b = obj.MouseLeave:Connect(function()
-			tooltip.Visible = false
-		end)
+		local a
+		local b
+		if not uis.TouchEnabled then
+			a = obj.MouseEnter:Connect(function()
+				tooltip.Text = text
+				tooltip.Visible = true
+			end)
+			b = obj.MouseLeave:Connect(function()
+				tooltip.Visible = false
+			end)
+		else
+			a = obj.InputBegan:Connect(function(i)
+				if i.UserInputType == Enum.UserInputType.Touch then
+					tooltip.Text = text
+					tooltip.Visible = true
+				end
+			end)
+			b = obj.InputEnded:Connect(function(i)
+				if i.UserInputType == Enum.UserInputType.Touch then
+					tooltip.Visible = false
+				end
+			end)
+		end
 		return function()
 			a:Disconnect()
 			b:Disconnect()
