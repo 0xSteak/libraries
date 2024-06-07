@@ -9,17 +9,13 @@
                                                       By 0xSteak                              
 ]]
 
-local reload = false
-
-if not pcall(getgenv) then warn("getgenv is required") return 0 end
---if not pcall(setreadonly, {}, false) then warn("setreadonly is required") return 0 end
-if getgenv().steakloaded then reload = true end
+local globalTable = getgenv and getgenv() or _G
 
 Steak = {
-	reload = reload,
+	_version = "v1.0",
+	reload = globalTable.steakloaded,
 	floating = false,
 }
-
 
 --Services
 Steak.rps = function()
@@ -64,23 +60,14 @@ Steak.char = function()
 	if not Steak.lp().Character then repeat wait() until Steak.lp().Character end
 	return Steak.lp().Character
 end
-
 Steak.hmnd = function()
 	return Steak.char():WaitForChild("Humanoid")
 end
-
 Steak.hrp = function()
 	return Steak.char():WaitForChild("HumanoidRootPart")
 end
 
---Upgrading globals
-
---Unlocking
---setreadonly(Instance, false)
---setreadonly(string, false)
-
---Upgrading
-Steak.cr = function(class, props)
+Steak.create = function(class, props)
 	local instance = Instance.new(class)
 	for i,v in pairs(props) do
 		if typeof(v) == "Instance" and i ~= "Parent" then
@@ -91,7 +78,8 @@ Steak.cr = function(class, props)
 	end
 	return instance
 end
---[[string.time = function(timenum, zeroText)
+
+Steak.timeToString = function(timenum, zeroText)
 	local days = math.floor(timenum / 86400)
 	local hours = math.floor(timenum / 3600 - days * 24)
 	local minutes = math.floor(timenum / 60 - days * 1440 - hours * 60)
@@ -140,16 +128,6 @@ end
 	end
 	return str
 end
-]]
-
-if workspace:FindFirstChild("SteakAPI") then
-	Steak.Folder = Steak.ws():FindFirstChild("SteakAPI")
-else
-	Steak.Folder = Steak.cr("Folder", {
-		Name = "SteakAPI",
-		Parent = Steak.ws()
-	})
-end
 
 Steak.randomString = function(length, letters, numbers, symbols, lowcase, upcase)
 	local letters_ = {
@@ -187,24 +165,25 @@ end
 
 Steak.Message = function(text, Time)
 	if Steak.cg():FindFirstChild("SteakMessage") then Steak.cg():FindFirstChild("SteakMessage"):Destroy() end
-	local Message = Steak.Instance("Message", {
+	local Message = Steak.create("Message", {
 		Name = "SteakMessage",
 		Parent = Steak.cg(),
 		Text = text
 	})
-	wait(Time)
+	if Time == nil then return end
+	task.wait(Time)
 	Message:Destroy()
 end
 
 Steak.Hint = function(text, Time)
 	if Steak.cg():FindFirstChild("SteakHint") then Steak.cg():FindFirstChild("SteakHint"):Destroy() end
-	local Hint = Steak.cr("Hint", {
+	local Hint = Steak.create("Hint", {
 		Name = "SteakHint",
 		Parent = Steak.cg(),
 		Text = text
 	})
 	if Time == nil then return end
-	wait(Time)
+	task.wait(Time)
 	Hint:Destroy()
 end
 
@@ -220,13 +199,16 @@ Steak.hasProp = function(obj, prop)
 	end
 end
 
-Steak.searchByName = function(instance, arg)
-	local instance_ = instance or game
+Steak.searchByName = function(instance, text, searchType, caseSensitive)
+	searchType = searchType or 0
 	local found = {}
-	for i,v in pairs(instance_:GetDescendants()) do
+	for i,v in pairs(instance:GetDescendants()) do
 		if Steak.hasProp(v, "Name") then
-			if string.find(v.Name, arg) then
+			local a = caseSensitive and v.Name:lower() or v.Name
+			local b = caseSensitive and text:lower() or text.Name
+			if searchType == 0 and string.find(a, b) then
 				table.insert(found, v)
+			elseif searchType == 1 and v.Name == text then
 			end
 		end
 	end
@@ -234,9 +216,8 @@ Steak.searchByName = function(instance, arg)
 end
 
 Steak.searchByProp = function(instance, prop, value)
-	local instance_ = instance or game
 	local found = {}
-	for i,v in pairs(instance_:GetDescendants()) do
+	for i,v in pairs(instance:GetDescendants()) do
 		if Steak.hasProp(v, prop) then
 			if v[prop] == value then
 				table.insert(found, v)
@@ -247,11 +228,10 @@ Steak.searchByProp = function(instance, prop, value)
 end
 
 Steak.searchByClass = function(instance, class)
-	local instance_ = instance or game
 	local found = {}
-	for i,v in pairs(instance_:GetDescendants()) do
+	for i,v in pairs(instance:GetDescendants()) do
 		if Steak.hasProp(v, 'ClassName') then
-			if string.find(v.ClassName, class) then
+			if v.ClassName == class then
 				table.insert(found, v)
 			end
 		end
@@ -275,7 +255,7 @@ Steak.move = function(arg)
 	if typeof(arg) == 'Instance' then
 		Steak.hmnd():MoveTo(arg.Position)
 	elseif typeof(arg) == 'Vector3' then
-		if #Steak.searchByProp(Steak.Folder, "Material", Enum.Material.Glass) < 1 then
+		if not Steak.movepart then
 			local part = Steak.Instance("Part", {
 				Name = Steak.randomString(15, true, true, false, true, true),
 				Material = Enum.Material.Glass,
@@ -285,8 +265,6 @@ Steak.move = function(arg)
 				Anchored = true
 			})
 			Steak.movepart = part
-		else
-			Steak.movepart = Steak.searchByProp(Steak.Folder, "Material", Enum.Material.Glass)[1]
 		end
 		Steak.movepart.Position = arg
 		Steak.hmnd():MoveTo(Steak.movepart.Position)
@@ -294,9 +272,9 @@ Steak.move = function(arg)
 end
 
 Steak.tween = function(pos, time_, easingstyle, easingdir)
-	local ts = Steak.ts()
-	local t = ts:Create(Steak.hrp(), TweenInfo.new(time_, easingstyle or Enum.EasingStyle.Linear, easingdir or Enum.EasingDirection.Out), {CFrame = pos})
-	t:Play()
+	Steak.ts()
+	:Create(Steak.hrp(), TweenInfo.new(time_, easingstyle or Enum.EasingStyle.Linear, easingdir or Enum.EasingDirection.Out), {CFrame = pos})
+	:Play()
 end
 
 Steak.distance = function(a, b)
@@ -339,57 +317,45 @@ Steak.round = function(num, numDecimalPlaces)
 end
 
 Steak.float = function()
-	if not Steak.ws():FindFirstChild("_FLOATPART") then
-		Steak.cr("Part", {
+	if not Steak.floatPart then
+		Steak.floatPart = Steak.create("Part", {
 			CanCollide = false,
 			Anchored = true,
 			Transparency = 1,
-			Name = "_FLOATPART",
+			Name = Steak.randomString(10),
 			Parent = Steak.ws(),
-			Size = Vector3.new(3, 0.5, 3)
+			Size = Vector3.new(3, 1, 3)
 		})
 	end
-	local floatfunc = {}
-	local floatpart = Steak.ws()._FLOATPART
+	local floatpart = Steak.floatPart
 	local pos = CFrame.new(Steak.hrp().Position.X, Steak.hrp().Position.Y - 3.75, Steak.hrp().Position.Z)
+
 	Steak.hmnd().HumanoidDescription.BodyTypeScale = 0
+
 	floatpart.CFrame = pos
 	floatpart.CanCollide = true
+
 	Steak.floating = true
-	return floatfunc
 end
 
 Steak.disableFloat = function()
-	if Steak.ws():FindFirstChild("_FLOATPART") then
-		local floatpart = Steak.ws()._FLOATPART
+	if Steak.floatPart then
+		local floatpart = Steak.floatPart
 		floatpart.CanCollide = false
 		Steak.floating = false
 	end
 end
 
 Steak.webhook = function(webhook, data)
-	if Steak.studio then
-		local httpenabled = pcall(function() Steak.hs():RequestAsync({Url = "example.com", Method = "POST"}) end)
-		if not httpenabled then error("SteakAPI: Can't use webhook function, seems like you didn't enabled http request in game settings") return end
-		Steak.hs():RequestAsync({
-			['Url'] = webhook,
-			['Method'] = "POST",
-			['Headers'] = {
-				['content-type'] = 'application/json'
-			},
-			['Body'] = Steak.hs():JSONEncode(data)
-		})
-	else
-		local requestfunc = (syn and syn.request or http_request or request)
-		requestfunc({
-			['Url'] = webhook,
-			['Method'] = "POST",
-			['Headers'] = {
-				['content-type'] = 'application/json'
-			},
-			['Body'] = Steak.hs():JSONEncode(data)
-		})
-	end
+	local requestfunc = (syn and syn.request or http_request or request)
+	requestfunc({
+		['Url'] = webhook,
+		['Method'] = "POST",
+		['Headers'] = {
+			['content-type'] = 'application/json'
+		},
+		['Body'] = Steak.hs():JSONEncode(data)
+	})
 end
 
 Steak.kick = function(reason)
@@ -398,34 +364,6 @@ end
 
 Steak.plrico = function(id)
 	return "https://www.roblox.com/headshot-thumbnail/image?userId="..tostring(id) or tostring(Steak.lp().UserId).."&width=420&height=420&format=png"
-end
-
-Steak.assert = function(mode, value, err)
-	if mode == 1 then
-		return assert(value, err)
-	elseif mode == 2 then
-		local suc = pcall(value)
-		if suc then
-			return value
-		else
-			error(err)
-		end
-	elseif mode == 3 then
-		local suc = pcall(function() local a = value end)
-		if suc then
-			return value
-		else
-			error(err)
-		end
-	end
-end
-
-Steak.vcheck = function(global)
-	if global ~= nil then
-		return true
-	else
-		return false
-	end
 end
 
 Steak.UI = function()
@@ -447,7 +385,7 @@ Steak.tableFromIndexes = function(t)
 end
 
 Steak.rejoin = function()
-	game:GetService("TeleportService"):Teleport(game.PlaceId)
+	game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, game.JobId, Steak.lp())
 end
 
 Steak.dumpTable = function(_t)
@@ -484,26 +422,17 @@ Steak.dumpTable = function(_t)
 	return dump(_t)
 end
 
---setreadonly(Instance, true)
---setreadonly(string, true)
 
-if Steak.studio then
-	if Steak.reload then
-		game:GetService('TestService'):Message("Steak API reloaded")
-	else
-		game:GetService('TestService'):Message("Steak API loaded")
-	end
-	_G.steakloaded = true
-	return Steak
-else
+if getgenv then
 	getgenv().Steak = Steak
-	--setreadonly(getgenv().Steak, true)
-	if Steak.reload then
-		game:GetService('TestService'):Message("Steak API reloaded")
-	else
-		game:GetService('TestService'):Message("Steak API loaded")
-	end
-	getgenv().steakloaded = true
 end
+
+if Steak.reload then
+	print(("Steak API %s reloaded"):format(Steak._version))
+else
+	print(("Steak API %s loaded"):format(Steak._version))
+end
+
+globalTable.steakloaded = true
 
 return Steak
