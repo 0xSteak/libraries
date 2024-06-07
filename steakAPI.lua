@@ -450,6 +450,40 @@ Steak.rejoin = function()
 	game:GetService("TeleportService"):Teleport(game.PlaceId)
 end
 
+Steak.dumpTable = function(_t)
+	local count = 0
+	local function tableLength(t)
+		local length = 0
+		for _ in t do
+			length +=1
+		end
+		return length
+	end
+	local function dump(t)
+		if type(t) == 'table' then
+			count += 1
+			local s = '{\n'..string.rep("    ", count)
+			local i = 0
+			for k,v in pairs(t) do
+				i += 1
+			   	if type(k) ~= 'number' then k = '"'..k..'"' end
+				if i < tableLength(t) then
+					s = s .. '['..k..'] = ' .. dump(v) .. ',\n'..string.rep("    ", count)
+				else
+					s = s .. '['..k..'] = ' .. dump(v) .. ',\n'
+				end
+			   	
+			end
+			count -= 1
+			return s .. string.rep("    ", count) ..  '}'
+		 else
+			return tostring(t)
+		 end
+	end
+
+	return dump(_t)
+end
+
 --setreadonly(Instance, true)
 --setreadonly(string, true)
 
