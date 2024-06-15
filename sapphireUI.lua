@@ -1007,6 +1007,12 @@ lib.new = function(config)
 
 		local a = false
 
+		for i,v in pairs(mainWindow:GetChildren()) do
+			if string.find(v.Name, "_msg") and v ~= element and v ~= nil then
+				v.Destroying:Wait()
+			end
+		end
+
 		local function checkmessages()
 			local check = false
 			for i,v in pairs(mainWindow:GetChildren()) do
@@ -1019,7 +1025,7 @@ lib.new = function(config)
 		end
 
 		local function tween(obj, props)
-			if tt[obj] ~= nil then tt[obj]:Pause() end
+			--if tt[obj] ~= nil then tt[obj]:Pause() end
 			local tinfo = TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
 			local t = ts:Create(obj, tinfo, props)
 			t:Play()
@@ -2438,6 +2444,144 @@ lib.new = function(config)
 	end
 
 	libNew.messageBox = messageBox
+
+	libNew.pushNotification = function(caption, text, buttons, callback)
+		local element = elementCreate.messageBox()
+
+		element.Name = caption.."_notif"
+		element.Parent = gui
+		element.Top.Title.Text = caption
+		element.Label.Text = text
+
+		local a = false
+
+		for i,v in pairs(mainWindow:GetChildren()) do
+			if string.find(v.Name, "_notif") and v ~= element and v ~= nil then
+				v.Destroying:Wait()
+			end
+		end
+
+		local function checkmessages()
+			local check = false
+			for i,v in pairs(mainWindow:GetChildren()) do
+				if string.find(v.Name, "_notif") and v ~= element then
+					check = true
+					break
+				end
+			end
+			return check
+		end
+
+		local function tween(obj, props)
+			if tt[obj] ~= nil then tt[obj]:Pause() end
+			local tinfo = TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+			local t = ts:Create(obj, tinfo, props)
+			t:Play()
+			tt[obj] = t
+		end
+
+		local function show()
+			tween(element, {Size = UDim2.new(0, 275, 0, 132), BackgroundTransparency = 0})
+
+		end
+
+		local function hide()
+			a = true
+			tween(element, {Size = UDim2.new(0, 275 * 0.8, 0, 132 * 0.8), BackgroundTransparency = 1})
+			if not checkmessages() then tween(mainWindow.BlackSolid, {BackgroundTransparency = 1}) end
+			tween(element.Top.Title, {TextTransparency = 1})
+			tween(element.Label, {TextTransparency = 1})
+			for i,v in pairs(element.ButtonContainer:GetChildren()) do
+				if v.ClassName == "TextButton" then
+					tween(v, {BackgroundTransparency = 1, TextTransparency = 1})
+				end
+			end
+			repeat wait() until element.BackgroundTransparency == 1
+			element:Destroy()
+		end
+
+		if buttons then
+			for i,title in pairs(buttons) do
+				local button = elementCreate.button()
+
+				button.Name = title
+				button.ZIndex = 2
+				button.Parent = element.ButtonContainer
+				button.AnchorPoint = Vector2.new(0.5, 0.5)
+				button.Text = title
+				button.Size = UDim2.new(math.clamp(button.TextBounds.X + 10, 75, 999) / element.ButtonContainer.AbsoluteSize.X, 0, 1, 0)
+				button.BackgroundTransparency = 1
+				button.TextTransparency = 1
+
+				button.MouseEnter:Connect(function()
+					if a then return end
+					if tt[button] ~= nil then tt[button]:Pause() end
+					local tinfo = TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.InOut)
+					local h,s,v = Color3.toHSV(button.BackgroundColor3)
+					local finalcolor
+					if s > 0.15 then
+						finalcolor = Color3.fromHSV(h, s - 0.15, v)
+					elseif v < 0.85 then
+						finalcolor = Color3.fromHSV(h, s, v + 0.15)
+					end
+					local t = ts:Create(button, tinfo, {BackgroundColor3 = finalcolor})
+					t:Play()
+					tt[button] = t
+				end)
+
+				button.MouseLeave:Connect(function()
+					if a then return end
+					if tt[button] ~= nil then tt[button]:Pause() end
+					local tinfo = TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.InOut)
+					local t = ts:Create(button, tinfo, {BackgroundColor3 = lib.settings.uiColor})
+					t:Play()
+					tt[button] = t
+				end)
+
+				button.MouseButton1Down:Connect(function()
+					if lib.settings.theme == 0 then
+						button.TextColor3 = Color3.fromRGB(225, 225, 225)
+					else
+						button.TextColor3 = Color3.fromRGB(20, 20, 20)
+					end
+				end)
+
+				button.MouseButton1Up:Connect(function()
+					if lib.settings.theme == 0 then
+						button.TextColor3 = Color3.fromRGB(20, 20, 20)
+					else
+						button.TextColor3 = Color3.fromRGB(225, 225, 225)
+					end
+				end)
+
+				button.MouseButton1Click:Connect(function()
+					if callback then callback(title) end
+					hide()
+				end)
+			end
+		end
+
+		--[[for i,v in pairs(element:GetDescendants()) do
+			if v.ClassName ~= "UICorner" and v.ClassName ~= "UIListLayout" then
+				v.Size = UDim2.new(v.AbsoluteSize.X / v.Parent.AbsoluteSize.X, 0, v.AbsoluteSize.Y / v.Parent.AbsoluteSize.Y, 0)
+			end
+		end]]
+
+		show()
+
+		return {
+			hide = hide,
+			editTitle = function(editedTitle)
+				element.Top.Title.Text = editedTitle
+			end,
+			editText = function(editedText)
+				element.Label.Text = editedText
+			end,
+			getObj = function()
+				return element
+			end,
+		}
+	end
 
 	libNew.setConfig = function(configTable)
 		if configTable.dontEnterTextFields then

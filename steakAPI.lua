@@ -371,9 +371,9 @@ Steak.UI = function()
 end
 
 Steak.newThread = function(func)
-    coroutine.wrap(function()
-        func()
-    end)()
+    local a = coroutine.create(func)
+	coroutine.resume(a)
+	return a
 end
 
 Steak.tableFromIndexes = function(t)
