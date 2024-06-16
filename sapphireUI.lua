@@ -2361,22 +2361,31 @@ lib.new = function(config)
 					end
 				end
 
-				addDropdown.set = function(val)
-					if multiSelect then
-						table.clear(selected)
+				addDropdown.set = function(val, prop)
+					prop = prop or 1
+					if prop == 1 then
+						if multiSelect then
+							table.clear(selected)
+							for i, option in pairs(DropdownContainer:GetChildren()) do
+								if option:IsA("TextButton") and table.find(val, option.Text) then
+									option.TextColor3 = lib.settings.uiColor
+									insert_colorable(option, 1)
+									table.insert(selected, option.Text)
+									Dropdown.Toggle.Value.Text = "Selected ("..#selected..")"
+								end
+							end
+							dropdownCallback(selected)
+						else
+							currentVal = val
+							Dropdown.Toggle.Value.Text = val
+							dropdownCallback(val)
+						end
+					elseif prop == 2 then
 						for i, option in pairs(DropdownContainer:GetChildren()) do
-							if option:IsA("TextButton") and table.find(val, option.Text) then
-								option.TextColor3 = lib.settings.uiColor
-								insert_colorable(option, 1)
-								table.insert(selected, option.Text)
-								Dropdown.Toggle.Value.Text = "Selected ("..#selected..")"
+							if option:IsA("TextButton") and val[option.Text] then
+								option.TextColor3 = val[option.Text]
 							end
 						end
-						dropdownCallback(selected)
-					else
-						currentVal = val
-						Dropdown.Toggle.Value.Text = val
-						dropdownCallback(val)
 					end
 				end
 
