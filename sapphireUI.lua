@@ -2382,6 +2382,42 @@ lib.new = function(config)
 						end
 					elseif prop == 2 then
 						for i, option in pairs(DropdownContainer:GetChildren()) do
+							if option:IsA("TextButton") then
+								option:Destroy()
+							end
+						end
+						for i,v in pairs(val) do
+							local option = elementCreate.dropdownOption()
+		
+							option.Name = v
+							option.Parent = DropdownContainer
+							option.Text = v
+		
+							option.MouseButton1Click:Connect(function()
+								if multiSelect then
+									if table.find(selected, v) then
+										option.TextColor3 = Color3.fromRGB(255, 255, 255)
+										remove_colorable(option)
+										table.remove(selected, table.find(selected, v))
+										Dropdown.Toggle.Value.Text = "Selected ("..#selected..")"
+										dropdownCallback(selected)
+									else
+										option.TextColor3 = lib.settings.uiColor
+										insert_colorable(option, 1)
+										table.insert(selected, v)
+										Dropdown.Toggle.Value.Text = "Selected ("..#selected..")"
+										dropdownCallback(selected)
+									end
+								else
+									currentVal = v
+									Dropdown.Toggle.Value.Text = v
+									dropdownCallback(v)
+									close()
+								end
+							end)
+						end
+					elseif prop == 3 then
+						for i, option in pairs(DropdownContainer:GetChildren()) do
 							if option:IsA("TextButton") and val[option.Text] then
 								option.TextColor3 = val[option.Text]
 							end
