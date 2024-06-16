@@ -203,7 +203,8 @@ elementCreate.mainObjects = function()
 				BackgroundColor3 = Color3.fromRGB(0, 0, 0),
 				BackgroundTransparency = 1,
 				Position = UDim2.new(0, 0, 0, 0),
-				Size = UDim2.fromScale(1, 1)
+				Size = UDim2.fromScale(1, 1),
+				create("UICorner", {CornerRadius = UDim.new(0, 10)})
 			})
 		}),
 		create("TextLabel", {
