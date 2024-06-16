@@ -1025,7 +1025,7 @@ lib.new = function(config)
 		end
 
 		local function tween(obj, props)
-			--if tt[obj] ~= nil then tt[obj]:Pause() end
+			if tt[obj] ~= nil then tt[obj]:Cancel() end
 			local tinfo = TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
 			local t = ts:Create(obj, tinfo, props)
 			t:Play()
@@ -1060,6 +1060,8 @@ lib.new = function(config)
 			element:Destroy()
 		end
 
+		local tt2 = {}
+
 		if buttons then
 			for i,title in pairs(buttons) do
 				local button = elementCreate.button()
@@ -1075,7 +1077,7 @@ lib.new = function(config)
 
 				button.MouseEnter:Connect(function()
 					if a then return end
-					if tt[button] ~= nil then tt[button]:Pause() end
+					if tt2[button] ~= nil then tt2[button]:Cancel() end
 					local tinfo = TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.InOut)
 					local h,s,v = Color3.toHSV(button.BackgroundColor3)
 					local finalcolor
@@ -1086,16 +1088,16 @@ lib.new = function(config)
 					end
 					local t = ts:Create(button, tinfo, {BackgroundColor3 = finalcolor})
 					t:Play()
-					tt[button] = t
+					tt2[button] = t
 				end)
 
 				button.MouseLeave:Connect(function()
 					if a then return end
-					if tt[button] ~= nil then tt[button]:Pause() end
+					if tt2[button] ~= nil then tt2[button]:Cancel() end
 					local tinfo = TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.InOut)
 					local t = ts:Create(button, tinfo, {BackgroundColor3 = lib.settings.uiColor})
 					t:Play()
-					tt[button] = t
+					tt2[button] = t
 				end)
 
 				button.MouseButton1Down:Connect(function()
@@ -1175,7 +1177,7 @@ lib.new = function(config)
 		menuObj.Position = UDim2.fromOffset(mouse().X, mouse().Y)
 
 		local function tween(obj, props)
-			if tt[obj] ~= nil then tt[obj]:Pause() end
+			if tt[obj] ~= nil then tt[obj]:Cancel() end
 			local tinfo = TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
 			local t = ts:Create(obj, tinfo, props)
 			t:Play()
@@ -1236,7 +1238,7 @@ lib.new = function(config)
 				end
 			end
 		end
-		--[[if tt[tContainer] ~= nil then tt[tContainer]:Pause() end
+		--[[if tt[tContainer] ~= nil then tt[tContainer]:Cancel() end
 		local tinfo = TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
 		local t = ts:Create(tContainer, tinfo, {CanvasPosition = Vector2.new(0, 425 * tContainer[tabName].LayoutOrder)})
 		t:Play()
@@ -1541,7 +1543,7 @@ lib.new = function(config)
 
 				button.MouseEnter:Connect(function()
 					if not disabled then
-						if tt[button] ~= nil then tt[button]:Pause() end
+						if tt[button] ~= nil then tt[button]:Cancel() end
 						local tinfo = TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.InOut)
 						local h,s,v = Color3.toHSV(button.BackgroundColor3)
 						local finalcolor
@@ -1558,7 +1560,7 @@ lib.new = function(config)
 
 				button.MouseLeave:Connect(function()
 					if not disabled then
-						if tt[button] ~= nil then tt[button]:Pause() end
+						if tt[button] ~= nil then tt[button]:Cancel() end
 						local tinfo = TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.InOut)
 						local t = ts:Create(button, tinfo, {BackgroundColor3 = lib.settings.uiColor})
 						t:Play()
@@ -1800,8 +1802,8 @@ lib.new = function(config)
 				end
 
 				local function setState(bool)
-					if tt[toggle.Toggle.Circle] ~= nil then tt[toggle.Toggle.Circle]:Pause() end
-					if tt[toggle.Toggle] ~= nil then tt[toggle.Toggle]:Pause() end
+					if tt[toggle.Toggle.Circle] ~= nil then tt[toggle.Toggle.Circle]:Cancel() end
+					if tt[toggle.Toggle] ~= nil then tt[toggle.Toggle]:Cancel() end
 					local tinfo = TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
 					local tween1 = ts:Create(toggle.Toggle.Circle, tinfo, {Position = UDim2.new(0, bool and 17 or not bool and 3, 0, 3)})
 					local tween2 = ts:Create(toggle.Toggle, tinfo, {BackgroundColor3 = bool and lib.settings.uiColor or not bool and Color3.fromRGB(40, 40, 40)})
@@ -2120,7 +2122,7 @@ lib.new = function(config)
 					if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
 						Sliding = true
 						local Position = UDim2.new(math.clamp((i.Position.X - SliderMain.SliderBorder.AbsolutePosition.X) / SliderMain.SliderBorder.AbsoluteSize.X, 0, 1), 0, 0, 6)
-						if tt[Slider] ~= nil then tt[Slider]:Pause() end
+						if tt[Slider] ~= nil then tt[Slider]:Cancel() end
 						local tinfo = TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
 						local t = ts:Create(Slider, tinfo, {Size = Position})
 						t:Play()
@@ -2142,7 +2144,7 @@ lib.new = function(config)
 					if i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch then
 						if Sliding then
 							local Position = UDim2.new(math.clamp((i.Position.X - SliderMain.SliderBorder.AbsolutePosition.X) / SliderMain.SliderBorder.AbsoluteSize.X, 0, 1), 0, 0, 6)
-							if tt[Slider] ~= nil then tt[Slider]:Pause() end
+							if tt[Slider] ~= nil then tt[Slider]:Cancel() end
 							local tinfo = TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
 							local t = ts:Create(Slider, tinfo, {Size = Position})
 							t:Play()
@@ -2252,8 +2254,8 @@ lib.new = function(config)
 
 				local function open()
 					cleanSearchBox()
-					if tt[Dropdown] ~= nil then tt[Dropdown]:Pause() end
-					if tt[Dropdown.Toggle.Arrow] ~= nil then tt[Dropdown.Toggle.Arrow]:Pause() end
+					if tt[Dropdown] ~= nil then tt[Dropdown]:Cancel() end
+					if tt[Dropdown.Toggle.Arrow] ~= nil then tt[Dropdown.Toggle.Arrow]:Cancel() end
 					local tinfo = TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
 					local t = ts:Create(Dropdown, tinfo, {Size = UDim2.new(0, 170, 0, 45 + containerSizeY + 10)})
 					local t2 = ts:Create(Dropdown.Toggle.Arrow, tinfo, {Rotation = 180})
@@ -2266,8 +2268,8 @@ lib.new = function(config)
 				end
 
 				local function close()
-					if tt[Dropdown] ~= nil then tt[Dropdown]:Pause() end
-					if tt[Dropdown.Toggle.Arrow] ~= nil then tt[Dropdown.Toggle.Arrow]:Pause() end
+					if tt[Dropdown] ~= nil then tt[Dropdown]:Cancel() end
+					if tt[Dropdown.Toggle.Arrow] ~= nil then tt[Dropdown.Toggle.Arrow]:Cancel() end
 					local tinfo = TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
 					local t = ts:Create(Dropdown, tinfo, {Size = UDim2.new(0, 170, 0, 45)})
 					local t2 = ts:Create(Dropdown.Toggle.Arrow, tinfo, {Rotation = 0})
@@ -2473,7 +2475,7 @@ lib.new = function(config)
 		end
 
 		local function tween(obj, props)
-			if tt[obj] ~= nil then tt[obj]:Pause() end
+			if tt[obj] ~= nil then tt[obj]:Cancel() end
 			local tinfo = TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
 			local t = ts:Create(obj, tinfo, props)
 			t:Play()
@@ -2515,7 +2517,7 @@ lib.new = function(config)
 
 				button.MouseEnter:Connect(function()
 					if a then return end
-					if tt[button] ~= nil then tt[button]:Pause() end
+					if tt[button] ~= nil then tt[button]:Cancel() end
 					local tinfo = TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.InOut)
 					local h,s,v = Color3.toHSV(button.BackgroundColor3)
 					local finalcolor
@@ -2531,7 +2533,7 @@ lib.new = function(config)
 
 				button.MouseLeave:Connect(function()
 					if a then return end
-					if tt[button] ~= nil then tt[button]:Pause() end
+					if tt[button] ~= nil then tt[button]:Cancel() end
 					local tinfo = TweenInfo.new(0.25, Enum.EasingStyle.Quart, Enum.EasingDirection.InOut)
 					local t = ts:Create(button, tinfo, {BackgroundColor3 = lib.settings.uiColor})
 					t:Play()
