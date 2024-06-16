@@ -2242,10 +2242,10 @@ lib.new = function(config)
 				local containerSizeY = 200
 
 				DropdownContainer.ListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-					containerSizeY = math.clamp(DropdownContainer.ListLayout.AbsoluteContentSize.Y, 0, 200)
-					DropdownContainer.Parent.Size = UDim2.new(0, 170, 0, math.clamp(DropdownContainer.ListLayout.AbsoluteContentSize.Y, 0, 200))
+					containerSizeY = math.clamp(DropdownContainer.ListLayout.AbsoluteContentSize.Y, 18, 200)
+					DropdownContainer.Parent.Size = UDim2.new(0, 170, 0, math.clamp(DropdownContainer.ListLayout.AbsoluteContentSize.Y, 18, 200))
 					DropdownContainer.CanvasSize = UDim2.new(0, 0, 0, DropdownContainer.ListLayout.AbsoluteContentSize.Y)
-					DropdownContainer.Size = UDim2.new(0, 170, 0, math.clamp(DropdownContainer.ListLayout.AbsoluteContentSize.Y, 0, 200) - 18)
+					DropdownContainer.Size = UDim2.new(0, 170, 0, math.clamp(DropdownContainer.ListLayout.AbsoluteContentSize.Y, 18, 200) - 18)
 					if opened then
 						Dropdown.Size = UDim2.new(0, 170, 0, 45 + containerSizeY + 10)
 					end
@@ -2396,13 +2396,13 @@ lib.new = function(config)
 							option.Text = v
 
 							if #DropdownContainer.Parent._SearchBox.Text > 0 then
-								if string.find(v.Text:lower(), DropdownContainer.Parent._SearchBox.Text:lower()) then
-									v.Visible = true
+								if string.find(option.Text:lower(), DropdownContainer.Parent._SearchBox.Text:lower()) then
+									option.Visible = true
 								else
-									v.Visible = false
+									option.Visible = false
 								end
 							else
-								v.Visible = true
+								option.Visible = true
 							end
 		
 							option.MouseButton1Click:Connect(function()
