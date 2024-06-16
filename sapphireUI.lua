@@ -1117,8 +1117,8 @@ lib.new = function(config)
 				end)
 
 				button.MouseButton1Click:Connect(function()
+					task.spawn(hide)
 					if callback then callback(title) end
-					hide()
 				end)
 			end
 		end
