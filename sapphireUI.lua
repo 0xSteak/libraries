@@ -588,9 +588,29 @@ elementCreate.dropdown = function()
 			Position = UDim2.new(0, 0, 0, 55),
 			Size = UDim2.new(0, 170, 0, 90),
 			create("UICorner", {CornerRadius = UDim.new(0, 8)}),
+			create("TextBox", {
+				Name = "_SearchBox",
+				BackgroundTransparency = 1,
+				ClearTextOnFocus = true,
+				Size = UDim2.new(0, 170, 0, 18),
+				FontFace = Font.new("rbxasset://fonts/families/Ubuntu.json"),
+				PlaceholderColor3 = Color3.fromRGB(175, 175, 175),
+				PlaceholderText = "Search...",
+				Text = "",
+				TextColor3 = Color3.fromRGB(255, 255, 255),
+				TextSize = 12,
+				create("Frame", {
+					Name = "Line",
+					BackgroundColor3 = Color3.fromRGB(70, 70, 70),
+					BorderSizePixel = 0,
+					Position = UDim2.new(0, 15, 0, 18),
+					Size = UDim2.new(0, 140, 0, 1)
+				})
+			}),
 			create("ScrollingFrame", {
 				Name = "Container",
 				BackgroundTransparency = 1,
+				Position = UDim2.new(0, 0, 0, 18),
 				Size = UDim2.new(0, 170, 0, 90),
 				ScrollBarImageColor3 = Color3.fromRGB(255, 255, 255),
 				ScrollBarThickness = 2,
@@ -600,25 +620,6 @@ elementCreate.dropdown = function()
 					FillDirection = Enum.FillDirection.Vertical,
 					HorizontalAlignment = Enum.HorizontalAlignment.Center,
 					VerticalAlignment = Enum.VerticalAlignment.Top
-				}),
-				create("TextBox", {
-					Name = "_SearchBox",
-					BackgroundTransparency = 1,
-					ClearTextOnFocus = true,
-					Size = UDim2.new(0, 170, 0, 18),
-					FontFace = Font.new("rbxasset://fonts/families/Ubuntu.json"),
-					PlaceholderColor3 = Color3.fromRGB(175, 175, 175),
-					PlaceholderText = "Search...",
-					Text = "",
-					TextColor3 = Color3.fromRGB(255, 255, 255),
-					TextSize = 12,
-					create("Frame", {
-						Name = "Line",
-						BackgroundColor3 = Color3.fromRGB(70, 70, 70),
-						BorderSizePixel = 0,
-						Position = UDim2.new(0, 15, 0, 18),
-						Size = UDim2.new(0, 140, 0, 1)
-					})
 				}),
 			})
 		})
@@ -2244,13 +2245,14 @@ lib.new = function(config)
 					containerSizeY = math.clamp(DropdownContainer.ListLayout.AbsoluteContentSize.Y, 0, 200)
 					DropdownContainer.Parent.Size = UDim2.new(0, 170, 0, math.clamp(DropdownContainer.ListLayout.AbsoluteContentSize.Y, 0, 200))
 					DropdownContainer.CanvasSize = UDim2.new(0, 0, 0, DropdownContainer.ListLayout.AbsoluteContentSize.Y)
+					DropdownContainer.Size = UDim2.new(0, 170, 0, math.clamp(DropdownContainer.ListLayout.AbsoluteContentSize.Y, 0, 200) - 18)
 					if opened then
 						Dropdown.Size = UDim2.new(0, 170, 0, 45 + containerSizeY + 10)
 					end
 				end)
 
 				local function cleanSearchBox()
-					DropdownContainer._SearchBox.Text = ""
+					DropdownContainer.Parent._SearchBox.Text = ""
 				end
 
 				local function open()
@@ -2263,7 +2265,7 @@ lib.new = function(config)
 					t:Play()
 					t2:Play()
 					if not uis.TouchEnabled then
-						DropdownContainer._SearchBox:CaptureFocus()
+						DropdownContainer.Parent._SearchBox:CaptureFocus()
 					end
 					opened = true
 				end
@@ -2287,11 +2289,11 @@ lib.new = function(config)
 					end
 				end)
 
-				DropdownContainer._SearchBox.Changed:Connect(function(prop)
+				DropdownContainer.Parent._SearchBox.Changed:Connect(function(prop)
 					if prop == "Text" then
-						if #DropdownContainer._SearchBox.Text > 0 then
+						if #DropdownContainer.Parent._SearchBox.Text > 0 then
 							for i,v in pairs(DropdownContainer:GetChildren()) do
-								if v:IsA("TextButton") and string.find(v.Text:lower(), DropdownContainer._SearchBox.Text:lower()) then
+								if v:IsA("TextButton") and string.find(v.Text:lower(), DropdownContainer.Parent._SearchBox.Text:lower()) then
 									v.Visible = true
 								elseif v:IsA("TextButton") then
 									v.Visible = false
@@ -2392,6 +2394,16 @@ lib.new = function(config)
 							option.Name = v
 							option.Parent = DropdownContainer
 							option.Text = v
+
+							if #DropdownContainer.Parent._SearchBox.Text > 0 then
+								if string.find(v.Text:lower(), DropdownContainer.Parent._SearchBox.Text:lower()) then
+									v.Visible = true
+								else
+									v.Visible = false
+								end
+							else
+								v.Visible = true
+							end
 		
 							option.MouseButton1Click:Connect(function()
 								if multiSelect then
