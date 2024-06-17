@@ -2393,7 +2393,7 @@ lib.new = function(config)
 							option.Parent = DropdownContainer
 							option.Text = v
 
-							if #DropdownContainer.Parent._SearchBox.Text > 0 then
+							if opened and #DropdownContainer.Parent._SearchBox.Text > 0 then
 								if string.find(option.Text:lower(), DropdownContainer.Parent._SearchBox.Text:lower()) then
 									option.Visible = true
 								else
