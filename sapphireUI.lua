@@ -2265,7 +2265,7 @@ lib.new = function(config)
 					t:Play()
 					t2:Play()
 					if not uis.TouchEnabled then
-						DropdownContainer.Parent._SearchBox:CaptureFocus()
+						--DropdownContainer.Parent._SearchBox:CaptureFocus()
 					end
 					opened = true
 				end
@@ -2289,21 +2289,19 @@ lib.new = function(config)
 					end
 				end)
 
-				DropdownContainer.Parent._SearchBox.Changed:Connect(function(prop)
-					if prop == "Text" then
-						if #DropdownContainer.Parent._SearchBox.Text > 0 then
-							for i,v in pairs(DropdownContainer:GetChildren()) do
-								if v:IsA("TextButton") and string.find(v.Text:lower(), DropdownContainer.Parent._SearchBox.Text:lower()) then
-									v.Visible = true
-								elseif v:IsA("TextButton") then
-									v.Visible = false
-								end
+				DropdownContainer.Parent._SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
+					if #DropdownContainer.Parent._SearchBox.Text > 0 then
+						for i,v in pairs(DropdownContainer:GetChildren()) do
+							if v:IsA("TextButton") and string.find(v.Text:lower(), DropdownContainer.Parent._SearchBox.Text:lower()) then
+								v.Visible = true
+							elseif v:IsA("TextButton") then
+								v.Visible = false
 							end
-						else
-							for i,v in pairs(DropdownContainer:GetChildren()) do
-								if v:IsA("TextButton")then
-									v.Visible = true
-								end
+						end
+					else
+						for i,v in pairs(DropdownContainer:GetChildren()) do
+							if v:IsA("TextButton")then
+								v.Visible = true
 							end
 						end
 					end
