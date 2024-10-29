@@ -56,15 +56,14 @@ end
 Steak.lp = function()
 	return Steak.plrs().LocalPlayer
 end
-Steak.char = function()
-	if not Steak.lp().Character then repeat wait() until Steak.lp().Character end
-	return Steak.lp().Character
+Steak.char = function(plr)
+	return plr and plr.Character or Steak.lp().Character
 end
-Steak.hmnd = function()
-	return Steak.char():WaitForChild("Humanoid")
+Steak.hmnd = function(plr)
+	return Steak.char(plr) and Steak.char(plr):FindFirstChild("Humanoid")
 end
-Steak.hrp = function()
-	return Steak.char():WaitForChild("HumanoidRootPart")
+Steak.hrp = function(plr)
+	return Steak.char(plr) and Steak.char(plr):FindFirstChild("HumanoidRootPart")
 end
 
 Steak.create = function(class, props)
@@ -422,6 +421,16 @@ Steak.dumpTable = function(_t)
 	return dump(_t)
 end
 
+Steak.Obj = function(...)
+	local objects = {...}
+	local waitTimeout
+	local obj = objects[2]
+	table.remove(objects, 1)
+
+	for i,v in objects do
+		
+	end
+end
 
 if getgenv then
 	getgenv().Steak = Steak
