@@ -12,7 +12,8 @@ local lib = {
 	scrollbars = {},
 	buttons = {},
 	tabCount = 0,
-	ctrl_pressed = false
+	ctrl_pressed = false,
+	connections = {}
 }
 
 --services
@@ -20,17 +21,17 @@ local ts = game:GetService('TweenService')
 local uis = game:GetService('UserInputService')
 local rs = game:GetService('RunService')
 
-uis.InputBegan:Connect(function(input)
+table.insert(lib.connections, uis.InputBegan:Connect(function(input)
 	if input.KeyCode == Enum.KeyCode.LeftControl then
 		lib.ctrl_pressed = true
 	end
-end)
+end))
 
-uis.InputEnded:Connect(function(input)
+table.insert(lib.connections, uis.InputEnded:Connect(function(input)
 	if input.KeyCode == Enum.KeyCode.LeftControl then
 		lib.ctrl_pressed = false
 	end
-end)
+end))
 
 -- function for normal dragging, bc roblox dragging is so shitty
 local function makeDraggable(ClickObject, Object) -- credits to idk, not mine
@@ -40,7 +41,7 @@ local function makeDraggable(ClickObject, Object) -- credits to idk, not mine
 	local StartPosition = nil
 	local UserInputService = game:GetService('UserInputService')
 
-	ClickObject.InputBegan:Connect(function(Input)
+	table.insert(lib.connections, ClickObject.InputBegan:Connect(function(Input)
 		if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
 			Dragging = true
 			DragStart = Input.Position
@@ -52,20 +53,20 @@ local function makeDraggable(ClickObject, Object) -- credits to idk, not mine
 				end
 			end)
 		end
-	end)
+	end))
 
-	ClickObject.InputChanged:Connect(function(Input)
+	table.insert(lib.connections, ClickObject.InputChanged:Connect(function(Input)
 		if Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch then
 			DragInput = Input
 		end
-	end)
+	end))
 
-	UserInputService.InputChanged:Connect(function(Input)
+	table.insert(lib.connections, UserInputService.InputChanged:Connect(function(Input)
 		if Input == DragInput and Dragging then
 			local Delta = Input.Position - DragStart
 			Object.Position = UDim2.new(StartPosition.X.Scale, StartPosition.X.Offset + Delta.X, StartPosition.Y.Scale, StartPosition.Y.Offset + Delta.Y)
 		end
-	end)
+	end))
 end
 
 local function randomString(len)
@@ -983,15 +984,15 @@ lib.new = function(config)
 	end
 
 	local mouse = function() return game.Players.LocalPlayer:GetMouse() end
-	mouse().Button1Down:Connect(function()
+	table.insert(lib.connections, mouse().Button1Down:Connect(function()
 		tooltip.Visible = false
-	end)
+	end))
 
-	rs.RenderStepped:Connect(function()
+	table.insert(lib.connections, rs.RenderStepped:Connect(function()
 		if tooltip.Visible then
 			tooltip.Position = UDim2.new(0, mouse().X, 0, mouse().Y - tooltip.Size.Y.Offset)
 		end
-	end)
+	end))
 
 	tooltip:GetPropertyChangedSignal("Text"):Connect(function()
 		local textserv = game:GetService("TextService")
@@ -1223,6 +1224,9 @@ lib.new = function(config)
 				connection2:Disconnect()
 			end
 		end)
+
+		table.insert(lib.connections, connection1)
+		table.insert(lib.connections, connection2)
 	end
 
 	local function selectTab(tabName)
@@ -1329,7 +1333,7 @@ lib.new = function(config)
 			end
 		end)
 
-        uis.InputChanged:Connect(function(input)
+        table.insert(lib.connections, uis.InputChanged:Connect(function(input)
             if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
                 if SettingValue then
                     local Value = math.clamp((ValImg.AbsolutePosition.Y - input.Position.Y + ValImg.AbsoluteSize.Y) / ValImg.AbsoluteSize.Y, 0, 1)
@@ -1348,7 +1352,7 @@ lib.new = function(config)
                     paletteCurrentCallback(Color3.fromHSV(Color[1], Color[2], Color[3]))
                 end
             end
-        end)
+        end))
 	end
 	
 	Palette.SetColor = function(color)
@@ -1383,11 +1387,11 @@ lib.new = function(config)
 
     Palette.Init()
 
-	uis.InputEnded:Connect(function(i, gpe)
+	table.insert(lib.connections, uis.InputEnded:Connect(function(i, gpe)
 		if i.KeyCode == Enum.KeyCode.RightControl and not gpe then
 			gui.Enabled = not gui.Enabled
 		end
-	end)
+	end))
 
 	libNew.addTab = function(tabName)
 		local addTab = {}
@@ -1628,6 +1632,7 @@ lib.new = function(config)
 							disconnect()
 						end
 					end)
+					table.insert(lib.connections, inputconnection)
 				end
 
 				button.MouseButton2Down:Connect(function()
@@ -1710,13 +1715,13 @@ lib.new = function(config)
 					end
 				end)]]
 
-				uis.InputEnded:Connect(function(input)
+				table.insert(lib.connections, uis.InputEnded:Connect(function(input)
 					if input.UserInputType == Enum.UserInputType.Keyboard then
 						if input.KeyCode == keybind and not disabled and not binding and not uis:GetFocusedTextBox() then
 							callback()
 						end
 					end
-				end)
+				end))
 
 				addButton.getObj = function()
 					return button
@@ -1867,6 +1872,7 @@ lib.new = function(config)
 							disconnect()
 						end
 					end)
+					table.insert(lib.connections, inputconnection)
 				end
 
 				toggle.MouseButton2Down:Connect(function()
@@ -1937,7 +1943,7 @@ lib.new = function(config)
 					end
 				end)
 
-				uis.InputEnded:Connect(function(input)
+				table.insert(lib.connections, uis.InputEnded:Connect(function(input)
 					if input.UserInputType == Enum.UserInputType.Keyboard then
 						if input.KeyCode == keybind and not disabled and not binding and not uis:GetFocusedTextBox() then
 							stateBool = not stateBool
@@ -1945,7 +1951,7 @@ lib.new = function(config)
 							toggleCallback(stateBool)
 						end
 					end
-				end)
+				end))
 
 				addToggle.getObj = function()
 					return toggle
@@ -2142,7 +2148,7 @@ lib.new = function(config)
 					end
 				end)
 
-				uis.InputChanged:Connect(function(i)
+				table.insert(lib.connections, uis.InputChanged:Connect(function(i)
 					if i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch then
 						if Sliding then
 							local Position = UDim2.new(math.clamp((i.Position.X - SliderMain.SliderBorder.AbsolutePosition.X) / SliderMain.SliderBorder.AbsoluteSize.X, 0, 1), 0, 0, 6)
@@ -2156,7 +2162,7 @@ lib.new = function(config)
 							GlobalSliderValue = SliderValue
 						end
 					end
-				end)
+				end))
 
 				local function setValue(value, call)
 					value = math.clamp(value, min, max)
@@ -2665,6 +2671,11 @@ lib.new = function(config)
 	end
 
 	libNew.destroy = function()
+		for i,v in pairs(lib.connections) do
+			if typeof(v) == "RBXScriptConnection" then
+				v:Disconnect()
+			end
+		end
 		gui:Destroy()
 	end
 
