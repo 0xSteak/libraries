@@ -2103,7 +2103,7 @@ lib.new = function(config)
 				SliderMain.Name = sliderName
 				SliderMain.Parent = sectionContainer
 
-				if #sliderName > 20 or string.find(sliderName, "\n") then
+				if #sliderName > 26 or string.find(sliderName, "\n") then
 					SliderMain.SliderName.Text = sliderName:sub(1, 26).."..."
 				else
 					SliderMain.SliderName.Text = sliderName
