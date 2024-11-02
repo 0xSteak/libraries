@@ -406,7 +406,8 @@ elementCreate.label = function()
 		FontFace = Font.new("rbxasset://fonts/families/Ubuntu.json"),
 		Text = "",
 		TextColor3 = lib.settings.theme == 0 and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(0, 0, 0),
-		TextSize = 12
+		TextSize = 12,
+		TextWrapped = true,
 	})
 end
 elementCreate.button = function()
@@ -1614,16 +1615,19 @@ lib.new = function(config)
 
 				label.Name = randomString(30)
 				label.Parent = sectionContainer
-				label.Text = #labelText > 26 and labelText:sub(1, 26).."..." or labelText
+				--label.Text = #labelText > 26 and labelText:sub(1, 26).."..." or labelText
+				label.Text = labelText
 				label.TextXAlignment = labelAlignment == 0 and Enum.TextXAlignment.Left or labelAlignment == 1 and Enum.TextXAlignment.Center or labelAlignment == 2 and Enum.TextXAlignment.Right or Enum.TextXAlignment.Center
+
+				label.Size = UDim2.new(0, 170, label.TextBounds.Y + 8)
 
 				insert_texts(label)
 
-				local labelTooltip
+				--[[local labelTooltip
 
 				if #labelText > 26 then
 					labelTooltip = addTooltip(label, labelText)
-				end
+				end]]
 
 				addLabel.getObj = function(prop)
 					return label
