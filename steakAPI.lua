@@ -15,6 +15,7 @@ Steak = {
 	_version = "v1.0",
 	reload = globalTable.steakloaded,
 	floating = false,
+	timers = {}
 }
 
 --Services
@@ -419,6 +420,16 @@ Steak.dumpTable = function(_t)
 	end
 
 	return dump(_t)
+end
+
+Steak.setTimer = function(timerTime, timerName)
+	Steak.timers[timerName] = tick() + timerTime
+end
+
+Steak.isTimerFinished = function(timerName)
+	if Steak.timers[timerName] then
+		return tick() >= Steak.timers[timerName]
+	end
 end
 
 Steak.Obj = function(...)

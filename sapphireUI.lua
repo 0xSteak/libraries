@@ -95,6 +95,7 @@ local elementCreate = {}
 
 elementCreate.mainObjects = function()
 	return create("ScreenGui", {
+		Enabled = true,
 		ResetOnSpawn = false,
 		create("Frame", {
 			Name = "MainWindow",
@@ -622,6 +623,142 @@ elementCreate.dropdown = function()
 					HorizontalAlignment = Enum.HorizontalAlignment.Center,
 					VerticalAlignment = Enum.VerticalAlignment.Top
 				}),
+			})
+		})
+	})
+end
+elementCreate.list = function()
+	return create("Frame", {
+		Name = "List",
+		BackgroundTransparency = 1,
+		Size = UDim2.new(0, 170, 0, 45),
+		ClipsDescendants = true,
+		create("TextLabel", {
+			Name = "ListName",
+			BackgroundTransparency = 1,
+			Size = UDim2.new(0, 170, 0, 20),
+			FontFace = Font.new("rbxasset://fonts/families/Ubuntu.json"),
+			Text = "List",
+			TextColor3 = lib.settings.theme == 0 and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(0, 0, 0),
+			TextSize = 12,
+			TextXAlignment = Enum.TextXAlignment.Left
+		}),
+		create("TextButton", {
+			AutoButtonColor = false,
+			Name = "Toggle",
+			BackgroundColor3 = Color3.fromRGB(40, 40, 40),
+			Position = UDim2.new(0, 0, 0, 20),
+			Size = UDim2.new(0, 170, 0, 25),
+			Text = "",
+			create("UICorner", {CornerRadius = UDim.new(0, 8)}),
+			create("TextLabel", {
+				Name = "Value",
+				BackgroundTransparency = 1,
+				Position = UDim2.new(0, 10, 0, 0),
+				Size = UDim2.new(0, 160, 0, 25),
+				FontFace = Font.new("rbxasset://fonts/families/Ubuntu.json"),
+				Text = "0 Objects",
+				TextColor3 = lib.settings.theme == 0 and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(0, 0, 0),
+				TextSize = 12,
+				TextXAlignment = Enum.TextXAlignment.Left
+			}),
+			create("TextLabel", {
+				Name = "Arrow",
+				BackgroundTransparency = 1,
+				Position = UDim2.new(0, 145, 0, 0),
+				Size = UDim2.new(0, 25, 0, 25),
+				FontFace = Font.new("rbxasset://fonts/families/Ubuntu.json"),
+				Text = "▼",
+				TextColor3 = lib.settings.theme == 0 and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(0, 0, 0),
+				TextSize = 10
+			})
+		}),
+		create("Frame", {
+			Name = "Container",
+			BackgroundColor3 = Color3.fromRGB(40, 40, 40),
+			Position = UDim2.new(0, 0, 0, 55),
+			Size = UDim2.new(0, 170, 0, 90),
+			create("UICorner", {CornerRadius = UDim.new(0, 8)}),
+			create("Frame", {
+				Name = "Add",
+				BackgroundTransparency = 1,
+				Size = UDim2.new(0, 170, 0, 24),
+				create("TextBox", {
+					Name = "Field",
+					BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+					ClearTextOnFocus = true,
+					Position = UDim2.new(0, 2, 0, 3),
+					Size = UDim2.new(0, 140, 0, 18),
+					FontFace = Font.new("rbxasset://fonts/families/Ubuntu.json"),
+					PlaceholderColor3 = Color3.fromRGB(175, 175, 175),
+					PlaceholderText = "Object Name",
+					Text = "",
+					TextColor3 = Color3.fromRGB(255, 255, 255),
+					TextSize = 12,
+					create("UICorner", {CornerRadius = UDim.new(0, 8)}),
+				}),
+				create("TextButton", {
+					Name = "Button",
+					AutoButtonColor = false,
+					BackgroundColor3 = Color3.fromRGB(64, 163, 255),
+					Position = UDim2.new(0, 144, 0, 3),
+					Size = UDim2.new(0, 20, 0, 18),
+					Text = "",
+					create("UICorner", {CornerRadius = UDim.new(0, 4)}),
+					create("ImageLabel", {
+						Name = "Icon",
+						BackgroundTransparency = 1,
+						Position = UDim2.new(0, 2, 0, 1),
+						Size = UDim2.new(0, 16, 0, 16),
+						Image = "rbxassetid://401613236",
+						ImageColor3 = Color3.fromRGB(20, 20, 20)
+					})
+				})
+			}),
+			create("ScrollingFrame", {
+				Name = "Container",
+				BackgroundTransparency = 1,
+				BorderSizePixel = 0,
+				Position = UDim2.new(0, 0, 0, 24),
+				Size = UDim2.new(0, 170, 0, 90),
+				ScrollBarImageColor3 = Color3.fromRGB(255, 255, 255),
+				ScrollBarThickness = 2,
+				create("UIListLayout", {
+					Name = "ListLayout",
+					SortOrder = Enum.SortOrder.LayoutOrder,
+					FillDirection = Enum.FillDirection.Vertical,
+					HorizontalAlignment = Enum.HorizontalAlignment.Center,
+					VerticalAlignment = Enum.VerticalAlignment.Top
+				}),
+			})
+		})
+	})
+end
+elementCreate.listObject = function()
+	return create("TextLabel", {
+		Name = "Object",
+		BackgroundTransparency = 1,
+		Size = UDim2.new(0, 170, 0, 20),
+		FontFace = Font.new("rbxasset://fonts/families/Ubuntu.json"),
+		Text = "Option",
+		TextColor3 = lib.settings.theme == 0 and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(0, 0, 0),
+		TextSize = 12,
+		create("TextButton", {
+			Name = "Button",
+			AutoButtonColor = false,
+			BackgroundTransparency = 1,
+			BackgroundColor3 = Color3.fromRGB(64, 163, 255),
+			Position = UDim2.new(0, 144, 0, 2),
+			Size = UDim2.new(0, 20, 0, 20),
+			Text = "",
+			create("ImageLabel", {
+				Name = "Icon",
+				BackgroundTransparency = 1,
+				Position = UDim2.new(0, 3, 0, 3),
+				Size = UDim2.new(0, 14, 0, 14),
+				Rotation = 45,
+				Image = "rbxassetid://401613236",
+				ImageColor3 = Color3.fromRGB(255, 49, 49)
 			})
 		})
 	})
@@ -2442,6 +2579,183 @@ lib.new = function(config)
 				end
 
 				return addDropdown
+			end
+
+			addSection.addList = function(args)
+				local listName = args.name
+				local initVal = args.initVal or {}
+				local objectsName = args.objectsName or "Objects"
+				local addPlaceholder = args.addPlaceholder or "Object Name"
+				local addCallback = args.addCallback or function() return true end
+				local removeCallback = args.removeCallback or function() return true end
+				local updateCallback = args.updateCallback
+
+				local addList = {}
+
+				local currentVal = initVal or nil
+
+				local List = elementCreate.list()
+				local ListContainer = List.Container.Container
+
+				List.Name = listName
+				List.Parent = sectionContainer
+
+				List.Container.Add.Field.PlaceholderText = addPlaceholder
+				List.Toggle.Value.Text = #currentVal.." "..objectsName
+
+				if #listName > 26 or string.find(listName, "\n") then
+					List.ListName.Text = listName:sub(1, 26).."..."
+				else
+					List.ListName.Text = listName
+				end
+
+				local listTooltip
+
+				if #listName > 26 or string.find(listName, "\n") then
+					listTooltip = addTooltip(List.ListName, listName)
+				end
+
+				local opened = false
+				local containerSizeY = 0
+
+				containerSizeY = math.clamp(ListContainer.ListLayout.AbsoluteContentSize.Y, 0, 200)
+				ListContainer.Parent.Size = UDim2.new(0, 170, 0, math.clamp(ListContainer.ListLayout.AbsoluteContentSize.Y + 24, 24, 224))
+				ListContainer.CanvasSize = UDim2.new(0, 0, 0, ListContainer.ListLayout.AbsoluteContentSize.Y)
+				ListContainer.Size = UDim2.new(0, 170, 0, containerSizeY)
+				if opened then
+					List.Size = UDim2.new(0, 170, 0, 45 + containerSizeY + 10 + 24)
+				end
+
+				ListContainer.ListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+					containerSizeY = math.clamp(ListContainer.ListLayout.AbsoluteContentSize.Y, 0, 200)
+					ListContainer.Parent.Size = UDim2.new(0, 170, 0, math.clamp(ListContainer.ListLayout.AbsoluteContentSize.Y + 24, 24, 224))
+					ListContainer.CanvasSize = UDim2.new(0, 0, 0, ListContainer.ListLayout.AbsoluteContentSize.Y)
+					ListContainer.Size = UDim2.new(0, 170, 0, containerSizeY)
+					if opened then
+						List.Size = UDim2.new(0, 170, 0, 45 + containerSizeY + 10 + 24)
+					end
+				end)
+
+				local function cleanAddBox()
+					ListContainer.Parent.Add.Field.Text = ""
+				end
+
+				local function open()
+					cleanAddBox()
+					if tt[List] ~= nil then tt[List]:Cancel() end
+					if tt[List.Toggle.Arrow] ~= nil then tt[List.Toggle.Arrow]:Cancel() end
+					local tinfo = TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
+					local t = ts:Create(List, tinfo, {Size = UDim2.new(0, 170, 0, 45 + containerSizeY + 10 + 24)})
+					local t2 = ts:Create(List.Toggle.Arrow, tinfo, {Rotation = 180})
+					t:Play()
+					t2:Play()
+					if not uis.TouchEnabled then
+						--DropdownContainer.Parent._SearchBox:CaptureFocus()
+					end
+					opened = true
+				end
+
+				local function close()
+					if tt[List] ~= nil then tt[List]:Cancel() end
+					if tt[List.Toggle.Arrow] ~= nil then tt[List.Toggle.Arrow]:Cancel() end
+					local tinfo = TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
+					local t = ts:Create(List, tinfo, {Size = UDim2.new(0, 170, 0, 45)})
+					local t2 = ts:Create(List.Toggle.Arrow, tinfo, {Rotation = 0})
+					t:Play()
+					t2:Play()
+					opened = false
+				end
+
+				List.Toggle.MouseButton1Click:Connect(function()
+					if opened then
+						close()
+					else
+						open()
+					end
+				end)
+
+				ListContainer.Parent.Add.Button.MouseButton1Click:Connect(function()
+					local objectName = ListContainer.Parent.Add.Field.Text
+					if #objectName < 1 then
+						messageBox("Error", addPlaceholder.." cannot be empty.", {"Ok"})
+						return
+					end
+					if table.find(currentVal, objectName) then
+						messageBox("Error", "This "..addPlaceholder.." already exists.", {"Ok"})
+						return
+					end
+					if not addCallback(v) then
+						return
+					end
+					table.insert(currentVal, objectName)
+					local object = elementCreate.listObject()
+
+					object.Name = objectName
+					object.Parent = ListContainer
+					object.Text = objectName
+
+					object.Button.MouseButton1Click:Connect(function()
+						if removeCallback(v) then
+							table.remove(currentVal, table.find(currentVal, objectName))
+							List.Toggle.Value.Text = #currentVal.." "..objectsName
+							object:Destroy()
+						end
+					end)
+
+					updateCallback(currentVal)
+					List.Toggle.Value.Text = #currentVal.." "..objectsName
+				end)
+
+				for i,v in pairs(currentVal) do
+					local object = elementCreate.listObject()
+
+					object.Name = v
+					object.Parent = ListContainer
+					object.Text = v
+
+					object.Button.MouseButton1Click:Connect(function()
+						if removeCallback(v) then
+							table.remove(currentVal, table.find(currentVal, v))
+							List.Toggle.Value.Text = #currentVal.." "..objectsName
+							object:Destroy()
+						end
+					end)
+				end
+
+				updateCallback(currentVal)
+				List.Toggle.Value.Text = #currentVal.." "..objectsName
+
+				addList.get = function()
+					return currentVal
+				end
+
+				addList.set = function(val, prop)
+					currentVal = val
+					for i,v in pairs(ListContainer:GetChildren()) do
+						if v:IsA("TextLabel") then
+							v:Destroy()
+						end
+					end
+					for i,v in pairs(currentVal) do
+						local object = elementCreate.listObject()
+	
+						object.Name = v
+						object.Parent = ListContainer
+						object.Text = v
+	
+						object.Button.MouseButton1Click:Connect(function()
+							if removeCallback(v) then
+								table.remove(currentVal, table.find(currentVal, v))
+								List.Toggle.Value.Text = #currentVal.." "..objectsName
+								object:Destroy()
+							end
+						end)
+					end
+					updateCallback(currentVal)
+					List.Toggle.Value.Text = #currentVal.." "..objectsName
+				end
+
+				return addList
 			end
 			
 			addSection.addColorpicker = function(args)
