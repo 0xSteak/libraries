@@ -1619,7 +1619,7 @@ lib.new = function(config)
 				label.Text = labelText
 				label.TextXAlignment = labelAlignment == 0 and Enum.TextXAlignment.Left or labelAlignment == 1 and Enum.TextXAlignment.Center or labelAlignment == 2 and Enum.TextXAlignment.Right or Enum.TextXAlignment.Center
 
-				label.Size = UDim2.new(0, 170, label.TextBounds.Y + 8)
+				label.Size = UDim2.new(0, 170, 0, label.TextBounds.Y + 8)
 
 				insert_texts(label)
 
