@@ -1084,7 +1084,7 @@ lib.new = function(config)
 	gui.Parent = config.parent or game.CoreGui
 	topIcon.Image = config.icon or ""
 	topIcon.ImageColor3 = lib.settings.uiColor
-	topTitle.Text = config.name
+	topTitle.Text = config.name or "Untitled"
 
 	--[[tContainer.ListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 		tContainer.CanvasSize = UDim2.new(0, 0, 0, tContainer.ListLayout.AbsoluteContentSize.Y)
@@ -2357,6 +2357,7 @@ lib.new = function(config)
 				local options = args.options
 				local initVal = args.initVal
 				local multiSelect = args.multiSelect
+				local searchBoxEnabled = args.searchBoxEnabled
 				local dropdownCallback = args.callback or function() end
 
 				local addDropdown = {}
@@ -2381,21 +2382,36 @@ lib.new = function(config)
 					dropdownTooltip = addTooltip(Dropdown.DropdownName, dropdownName)
 				end
 
+				if not args.searchBoxEnabled then
+					DropdownContainer.Parent._SearchBox:Destroy()
+					DropdownContainer.Position = UDim2.new(0, 0, 0, 0)
+				end
+
 				local opened = false
-				local containerSizeY = 200
+				local searchBoxSizeY = args.searchBoxEnabled and 18 or 0
+
+				local containerSizeY = math.clamp(DropdownContainer.ListLayout.AbsoluteContentSize.Y, 0, 200)
+				DropdownContainer.Parent.Size = UDim2.new(0, 170, 0, math.clamp(DropdownContainer.ListLayout.AbsoluteContentSize.Y + searchBoxSizeY, searchBoxSizeY, 200 + searchBoxSizeY))
+				DropdownContainer.CanvasSize = UDim2.new(0, 0, 0, DropdownContainer.ListLayout.AbsoluteContentSize.Y)
+				DropdownContainer.Size = UDim2.new(0, 170, 0, containerSizeY)
+				if opened then
+					Dropdown.Size = UDim2.new(0, 170, 0, 45 + containerSizeY + 10 + searchBoxSizeY)
+				end
 
 				DropdownContainer.ListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-					containerSizeY = math.clamp(DropdownContainer.ListLayout.AbsoluteContentSize.Y, 18, 200)
-					DropdownContainer.Parent.Size = UDim2.new(0, 170, 0, math.clamp(DropdownContainer.ListLayout.AbsoluteContentSize.Y, 18, 200))
+					containerSizeY = math.clamp(DropdownContainer.ListLayout.AbsoluteContentSize.Y, 0, 200)
+					DropdownContainer.Parent.Size = UDim2.new(0, 170, 0, math.clamp(DropdownContainer.ListLayout.AbsoluteContentSize.Y + searchBoxSizeY, searchBoxSizeY, 200 + searchBoxSizeY))
 					DropdownContainer.CanvasSize = UDim2.new(0, 0, 0, DropdownContainer.ListLayout.AbsoluteContentSize.Y)
-					DropdownContainer.Size = UDim2.new(0, 170, 0, math.clamp(DropdownContainer.ListLayout.AbsoluteContentSize.Y, 18, 200) - 18)
+					DropdownContainer.Size = UDim2.new(0, 170, 0, containerSizeY)
 					if opened then
-						Dropdown.Size = UDim2.new(0, 170, 0, 45 + containerSizeY + 10)
+						Dropdown.Size = UDim2.new(0, 170, 0, 45 + containerSizeY + 10 + searchBoxSizeY)
 					end
 				end)
 
 				local function cleanSearchBox()
-					DropdownContainer.Parent._SearchBox.Text = ""
+					if args.searchBoxEnabled then
+						DropdownContainer.Parent._SearchBox.Text = ""
+					end
 				end
 
 				local function open()
@@ -2403,7 +2419,7 @@ lib.new = function(config)
 					if tt[Dropdown] ~= nil then tt[Dropdown]:Cancel() end
 					if tt[Dropdown.Toggle.Arrow] ~= nil then tt[Dropdown.Toggle.Arrow]:Cancel() end
 					local tinfo = TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
-					local t = ts:Create(Dropdown, tinfo, {Size = UDim2.new(0, 170, 0, 45 + containerSizeY + 10)})
+					local t = ts:Create(Dropdown, tinfo, {Size = UDim2.new(0, 170, 0, 45 + containerSizeY + 10 + searchBoxSizeY)})
 					local t2 = ts:Create(Dropdown.Toggle.Arrow, tinfo, {Rotation = 180})
 					t:Play()
 					t2:Play()
@@ -2432,23 +2448,25 @@ lib.new = function(config)
 					end
 				end)
 
-				DropdownContainer.Parent._SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
-					if #DropdownContainer.Parent._SearchBox.Text > 0 then
-						for i,v in pairs(DropdownContainer:GetChildren()) do
-							if v:IsA("TextButton") and string.find(v.Text:lower(), DropdownContainer.Parent._SearchBox.Text:lower()) then
-								v.Visible = true
-							elseif v:IsA("TextButton") then
-								v.Visible = false
+				if args.searchBoxEnabled then
+					DropdownContainer.Parent._SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
+						if #DropdownContainer.Parent._SearchBox.Text > 0 then
+							for i,v in pairs(DropdownContainer:GetChildren()) do
+								if v:IsA("TextButton") and string.find(v.Text:lower(), DropdownContainer.Parent._SearchBox.Text:lower()) then
+									v.Visible = true
+								elseif v:IsA("TextButton") then
+									v.Visible = false
+								end
+							end
+						else
+							for i,v in pairs(DropdownContainer:GetChildren()) do
+								if v:IsA("TextButton")then
+									v.Visible = true
+								end
 							end
 						end
-					else
-						for i,v in pairs(DropdownContainer:GetChildren()) do
-							if v:IsA("TextButton")then
-								v.Visible = true
-							end
-						end
-					end
-				end)
+					end)
+				end
 
 				local selected = {}
 
