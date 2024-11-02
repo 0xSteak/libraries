@@ -367,7 +367,7 @@ Steak.plrico = function(id)
 end
 
 Steak.UI = function()
-	return loadstring(game:HttpGet("https://raw.githubusercontent.com/0xSteak/libraries/main/sapphireUI.lua"))()
+	return loadstring(game:HttpGet("https://raw.githubusercontent.com/0xSteak/libraries/refs/heads/main/sapphireUI.lua"))()
 end
 
 Steak.newThread = function(func)

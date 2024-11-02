@@ -2684,7 +2684,7 @@ lib.new = function(config)
 						messageBox("Error", "This "..addPlaceholder.." already exists.", {"Ok"})
 						return
 					end
-					if not addCallback(v) then
+					if not addCallback(objectName) then
 						return
 					end
 					table.insert(currentVal, objectName)
