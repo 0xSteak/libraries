@@ -402,7 +402,7 @@ elementCreate.label = function()
 		Name = "Label",
 		BackgroundTransparency = 1,
 		Position = UDim2.new(0, 0, 0, 0),
-		Size = UDim2.new(0, 170, 0, 20),
+		Size = UDim2.new(0, 170, 0, 500),
 		FontFace = Font.new("rbxasset://fonts/families/Ubuntu.json"),
 		Text = "",
 		TextColor3 = lib.settings.theme == 0 and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(0, 0, 0),
