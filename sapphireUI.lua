@@ -2382,13 +2382,13 @@ lib.new = function(config)
 					dropdownTooltip = addTooltip(Dropdown.DropdownName, dropdownName)
 				end
 
-				if not args.searchBoxEnabled then
+				if not searchBoxEnabled then
 					DropdownContainer.Parent._SearchBox:Destroy()
 					DropdownContainer.Position = UDim2.new(0, 0, 0, 0)
 				end
 
 				local opened = false
-				local searchBoxSizeY = args.searchBoxEnabled and 18 or 0
+				local searchBoxSizeY = searchBoxEnabled and 18 or 0
 
 				local containerSizeY = math.clamp(DropdownContainer.ListLayout.AbsoluteContentSize.Y, 0, 200)
 				DropdownContainer.Parent.Size = UDim2.new(0, 170, 0, math.clamp(DropdownContainer.ListLayout.AbsoluteContentSize.Y + searchBoxSizeY, searchBoxSizeY, 200 + searchBoxSizeY))
@@ -2409,7 +2409,7 @@ lib.new = function(config)
 				end)
 
 				local function cleanSearchBox()
-					if args.searchBoxEnabled then
+					if searchBoxEnabled then
 						DropdownContainer.Parent._SearchBox.Text = ""
 					end
 				end
@@ -2448,7 +2448,7 @@ lib.new = function(config)
 					end
 				end)
 
-				if args.searchBoxEnabled then
+				if searchBoxEnabled then
 					DropdownContainer.Parent._SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
 						if #DropdownContainer.Parent._SearchBox.Text > 0 then
 							for i,v in pairs(DropdownContainer:GetChildren()) do
