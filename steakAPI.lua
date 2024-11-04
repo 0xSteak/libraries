@@ -1,76 +1,78 @@
---[[
-
-███████╗████████╗███████╗ █████╗ ██╗  ██╗     █████╗ ██████╗ ██╗
-██╔════╝╚══██╔══╝██╔════╝██╔══██╗██║ ██╔╝    ██╔══██╗██╔══██╗██║
-███████╗   ██║   █████╗  ███████║█████╔╝     ███████║██████╔╝██║
-╚════██║   ██║   ██╔══╝  ██╔══██║██╔═██╗     ██╔══██║██╔═══╝ ██║
-███████║   ██║   ███████╗██║  ██║██║  ██╗    ██║  ██║██║     ██║ 
-╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝    ╚═╝  ╚═╝╚═╝     ╚═╝
-                                                      By 0xSteak                              
-]]
+-- no documentation buddy
+-- made by 0xsteak
 
 local globalTable = getgenv and getgenv() or _G
 
 Steak = {
-	_version = "v1.0",
+	_version = "v1.01",
 	reload = globalTable.steakloaded,
 	floating = false,
-	timers = {}
+	timers = {},
+	listeners = {},
+	tween = nil
 }
 
---Services
-Steak.rps = function()
-	return game:GetService('ReplicatedStorage')
-end
-Steak.rpf = function()
-	return game:GetService('ReplicatedFirst')
-end
-Steak.ws = function()
-	return game:GetService('Workspace')
-end
-Steak.plrs = function()
-	return game:GetService('Players')
-end
-Steak.cg = function()
-	return game:GetService('CoreGui')
-end
-Steak.rs = function()
-	return game:GetService('RunService')
-end
-Steak.ts = function()
-	return game:GetService('TweenService')
-end
-Steak.hs = function()
-	return game:GetService('HttpService')
-end
-Steak.uis = function()
-	return game:GetService('UserInputService')
-end
-Steak.vu = function()
-	return game:GetService('VirtualUser')
-end
-Steak.vim = function()
-	return game:GetService('VirtualInputManager')
+local Players = game:GetService("Players")
+local CoreGui = game:GetService("CoreGui")
+local TweenService = game:GetService("TweenService")
+local HttpService = game:GetService("HttpService")
+local TeleportService = game:GetService("TeleportService")
+
+-- returns player by userid/name/character, if no argument then returns local player
+Steak.player = function(player)
+	if player then
+		if typeof(player) == "number" then
+			return Players:GetPlayerByUserId(player)
+		elseif typeof(player) == "Instance" and player:IsA("Model") then
+			return Players:GetPlayerFromCharacter(player)
+		elseif typeof(player) == "string" then
+			return Players:FindFirstChild(player)
+		else
+			return "💀" -- bro wtf did u give me
+		end
+	else
+		return Players.LocalPlayer
+	end
 end
 
---Player
-Steak.lp = function()
-	return Steak.plrs().LocalPlayer
-end
-Steak.char = function(plr)
-	return plr and plr.Character or Steak.lp().Character
-end
-Steak.hmnd = function(plr)
-	return Steak.char(plr) and Steak.char(plr):FindFirstChild("Humanoid")
-end
-Steak.hrp = function(plr)
-	return Steak.char(plr) and Steak.char(plr):FindFirstChild("HumanoidRootPart")
+-- returns player character or local player character
+Steak.character = function(player)
+	player = player or Steak.player()
+
+	if typeof(player) ~= "Instance" or not player:IsA("Player") then
+		player = Steak.player(player)
+	end
+
+	return player and player.Character
 end
 
+-- returns player humanoid or local player humanoid
+Steak.humanoid = function(player)
+	player = player or Steak.player()
+
+	if typeof(player) ~= "Instance" or not player:IsA("Player") then
+		player = Steak.player(player)
+	end
+
+	return Steak.character(player) and Steak.character(player):FindFirstChild("Humanoid")
+end
+
+-- returns player humanoidrootpart or local player humanoidrootpart
+Steak.rootPart = function(player)
+	player = player or Steak.player()
+
+	if typeof(player) ~= "Instance" or not player:IsA("Player") then
+		player = Steak.player(player)
+	end
+
+	return Steak.character(player) and Steak.character(player):FindFirstChild("HumanoidRootPart")
+end
+
+-- just convenient function for creating instances
 Steak.create = function(class, props)
 	local instance = Instance.new(class)
 	for i,v in pairs(props) do
-		if typeof(v) == "Instance" and i ~= "Parent" then
+		if typeof(v) == "Instance" and typeof(i) == "number" then
 			v.Parent = instance
 		else
 			instance[i] = v
@@ -79,6 +81,7 @@ Steak.create = function(class, props)
 	return instance
 end
 
+-- formatting time to string
 Steak.timeToString = function(timenum, zeroText)
 	local days = math.floor(timenum / 86400)
 	local hours = math.floor(timenum / 3600 - days * 24)
@@ -129,121 +132,107 @@ Steak.timeToString = function(timenum, zeroText)
 	return str
 end
 
+-- random string generator
 Steak.randomString = function(length, letters, numbers, symbols, lowcase, upcase)
-	local letters_ = {
-		['lowcase_'] = 'abcdefghijklmnopqrstuvwxyz',
-		['upcase_'] = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-	}
-	local numbers_ = '1234567890'
-	local symbols_ = '!#$%^&*(){}[]|/<>.?'
-	local main = ''
-	if letters == true then
-		if lowcase == true then
-			main = main..letters_['lowcase_']
-		end
-		if upcase == true then
-			main = main..letters_['upcase_']
-		end
-		if lowcase == nil and upcase == nil then
-			main = main..letters_['lowcase_']
-			main = main..letters_['upcase_']
-		end
+	local lowcase = lowcase == false and "" or "abcdefghijklmnopqrstuvwxyz"
+	local upcase = upcase == false and "" or "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	local letters = letters and lowcase..upcase or ""
+	local numbers = numbers and "1234567890" or ""
+	local symbols = symbols and "!#$%^&*(){}[]|/<>.?" or ""
+	local charSet = numbers..symbols..letters
+	local generated
+
+	if #charSet == 0 then  -- bro trynna generate string with empty char set
+		return 
 	end
-	if numbers == true then
-		main = main..numbers_
-	end
-	if symbols == true then
-		main = main..symbols_
-	end
-	local split = main:split('')
-	local generated = ''
+
 	for i = 1, length do
-		generated = generated..split[math.random(1, #split)]
+		local randomIndex = math.random(1, #charSet)
+		generated = generated..charSet:sub(randomIndex, randomIndex)
 	end
+
 	return generated
 end
 
-Steak.Message = function(text, Time)
-	if Steak.cg():FindFirstChild("SteakMessage") then Steak.cg():FindFirstChild("SteakMessage"):Destroy() end
+-- old roblox message system
+Steak.message = function(text, lifetime)
+	local oldMessage = CoreGui:FindFirstChild("SteakMessage")
+	if oldMessage then
+		oldMessage:FindFirstChild("SteakMessage"):Destroy()
+	end
 	local Message = Steak.create("Message", {
 		Name = "SteakMessage",
-		Parent = Steak.cg(),
+		Parent = CoreGui,
 		Text = text
 	})
-	if Time == nil then return end
-	task.wait(Time)
-	Message:Destroy()
+	if lifetime then
+		task.wait(lifetime)
+		Message:Destroy()
+	end
 end
 
-Steak.Hint = function(text, Time)
-	if Steak.cg():FindFirstChild("SteakHint") then Steak.cg():FindFirstChild("SteakHint"):Destroy() end
+-- also old roblox hint system
+Steak.hint = function(text, lifetime)
+	local oldHint = CoreGui:FindFirstChild("SteakHint")
+	if oldHint then
+		oldHint:FindFirstChild("SteakHint"):Destroy()
+	end
 	local Hint = Steak.create("Hint", {
 		Name = "SteakHint",
-		Parent = Steak.cg(),
+		Parent = CoreGui,
 		Text = text
 	})
-	if Time == nil then return end
-	task.wait(Time)
-	Hint:Destroy()
+	if lifetime then
+		task.wait(lifetime)
+		Hint:Destroy()
+	end
 end
 
+-- checks if instance has property
 Steak.hasProp = function(obj, prop)
-	local function a()
-		local b = obj[prop]
-	end
-	local success = pcall(function() a() end)
-	if success then
-		return true
-	else
-		return false
-	end
+	return pcall(function()
+		return obj[prop]
+	end)
 end
 
-Steak.searchByName = function(instance, text, searchType, caseSensitive)
-	searchType = searchType or 0
-	local found = {}
-	for i,v in pairs(instance:GetDescendants()) do
-		if Steak.hasProp(v, "Name") then
-			local a = caseSensitive and v.Name:lower() or v.Name
-			local b = caseSensitive and text:lower() or text.Name
-			if searchType == 0 and string.find(a, b) then
-				table.insert(found, v)
-			elseif searchType == 1 and v.Name == text then
+-- advanced instance search
+-- search types: "Name", "Class", "Property"
+Steak.search = function(instance, searchType, recursive, caseSensitive, searchInput, searchInput2)
+	local searchResult = {}
+
+	caseSensitive = caseSensitive or true
+
+	if not caseSensitive then
+		searchInput = searchInput:lower()
+		searchInput2 = searchInput2:lower()
+	end
+
+	for i,v in pairs(recursive and instance:GetDescendants() or instance:GetChildren()) do
+		local objName = not caseSensitive and v.Name:lower() or v.Name
+		if searchType == "Name" then
+			if objName == searchInput then
+				table.insert(searchResult, v)
+			end
+		elseif searchType == "Class" then
+			if v:IsA(searchInput) then
+				table.insert(searchResult, v)
+			end
+		elseif searchType == "Property" then
+			if Steak.hasProp(v, searchInput) and v[searchInput] == searchInput2 then
+				table.insert(searchResult, v)
 			end
 		end
 	end
-	return found
+
+	return searchResult
 end
 
-Steak.searchByProp = function(instance, prop, value)
-	local found = {}
-	for i,v in pairs(instance:GetDescendants()) do
-		if Steak.hasProp(v, prop) then
-			if v[prop] == value then
-				table.insert(found, v)
-			end
-		end
-	end
-	return found
-end
-
-Steak.searchByClass = function(instance, class)
-	local found = {}
-	for i,v in pairs(instance:GetDescendants()) do
-		if Steak.hasProp(v, 'ClassName') then
-			if v.ClassName == class then
-				table.insert(found, v)
-			end
-		end
-	end
-	return found
-end
-
+-- just teleport function
 Steak.tp = function(x, y, z)
-	if typeof(x) == 'number' then
+	if typeof(x) == "number" then
 		Steak.hrp().CFrame = CFrame.new(x, y, z)
-	elseif typeof(x) == 'Instance' and Steak.hasProp(x, "Position") then
-		Steak.hrp().CFrame = CFrame.new(x.Position.X, x.Position.Y, x.Position.Z)
+	elseif typeof(x) == "Instance" and Steak.hasProp(x, "Position") then
+		Steak.hrp().CFrame = CFrame.new(x.Position)
 	elseif typeof(x) == "Vector3" then
 		Steak.hrp().CFrame = CFrame.new(x)
 	elseif typeof(x) == "CFrame" then
@@ -251,35 +240,29 @@ Steak.tp = function(x, y, z)
 	end
 end
 
-Steak.move = function(arg)
-	if typeof(arg) == 'Instance' then
-		Steak.hmnd():MoveTo(arg.Position)
-	elseif typeof(arg) == 'Vector3' then
-		if not Steak.movepart then
-			local part = Steak.Instance("Part", {
-				Name = Steak.randomString(15, true, true, false, true, true),
-				Material = Enum.Material.Glass,
-				Parent = Steak.ws(),
-				Transparency = 1,
-				CanCollide = false,
-				Anchored = true
-			})
-			Steak.movepart = part
-		end
-		Steak.movepart.Position = arg
-		Steak.hmnd():MoveTo(Steak.movepart.Position)
+-- makes ur character to walk to given position
+Steak.walkTo = function(position)
+	local humanoid = Steak.humanoid()
+	if humanoid then
+		humanoid:MoveTo(position)
 	end
 end
 
-Steak.tween = function(pos, time_, easingstyle, easingdir)
-	Steak.ts()
-	:Create(Steak.hrp(), TweenInfo.new(time_, easingstyle or Enum.EasingStyle.Linear, easingdir or Enum.EasingDirection.Out), {CFrame = pos})
-	:Play()
+-- tweens ur character (smooth/interpolated teleport)
+Steak.tweenCharacter = function(position, tweenTime, easingStyle, easingDirection)
+	Steak.tween = TweenService:Create(Steak.hrp(), TweenInfo.new(tweenTime, easingStyle or Enum.EasingStyle.Linear, easingDirection or Enum.EasingDirection.Out), {CFrame = position})
+	Steak.tween:Play()
 end
 
+-- stops the tween if its running
+Steak.stopTween = function()
+	if Steak.tween then
+		Steak.tween:Cancel()
+	end
+end
+
+-- get distance between u and position or between two positions (arg must be instance or position)
 Steak.distance = function(a, b)
-	a = a
-	b = b
 	if typeof(a) == "Instance" then
 		a = a.Position
 	end
@@ -287,20 +270,17 @@ Steak.distance = function(a, b)
 		b = b.Position
 	end
 	if b == nil then
-		local distance = (Steak.hrp().Position - a).Magnitude
-		return distance
+		return Steak.rootPart() and (Steak.rootPart().Position - a).Magnitude
 	else
-		local distance = (a - b).Magnitude
-		return distance
+		return (a - b).Magnitude
 	end
 end
 
+-- get the closest object from <objects> to <object>
 Steak.closestObj = function(object, objects)
-	object = object
-	objects = objects
 	if objects == nil then
 		objects = object
-		object = Steak.hrp()
+		object = Steak.rootPart()
 	end
 	local a = objects[1]
 	for i,v in pairs(objects) do
@@ -311,12 +291,14 @@ Steak.closestObj = function(object, objects)
 	return a
 end
 
+-- godly round function
 Steak.round = function(num, numDecimalPlaces)
 	local mult = 10^(numDecimalPlaces or 0)
 	return math.floor(num * mult + 0.5) / mult
 end
 
-Steak.float = function()
+-- old shit, im lazy to rewrite it
+--[[Steak.float = function()
 	if not Steak.floatPart then
 		Steak.floatPart = Steak.create("Part", {
 			CanCollide = false,
@@ -344,8 +326,9 @@ Steak.disableFloat = function()
 		floatpart.CanCollide = false
 		Steak.floating = false
 	end
-end
+end]]
 
+-- discord webhook
 Steak.webhook = function(webhook, data)
 	local requestfunc = (syn and syn.request or http_request or request)
 	requestfunc({
@@ -354,16 +337,16 @@ Steak.webhook = function(webhook, data)
 		['Headers'] = {
 			['content-type'] = 'application/json'
 		},
-		['Body'] = Steak.hs():JSONEncode(data)
+		['Body'] = HttpService:JSONEncode(data)
 	})
 end
 
 Steak.kick = function(reason)
-	Steak.lp():Kick(reason)
+	Steak.player():Kick(reason)
 end
 
 Steak.plrico = function(id)
-	return "https://www.roblox.com/headshot-thumbnail/image?userId="..tostring(id) or tostring(Steak.lp().UserId).."&width=420&height=420&format=png"
+	
 end
 
 Steak.UI = function()
@@ -384,8 +367,26 @@ Steak.tableFromIndexes = function(t)
 	return result
 end
 
-Steak.rejoin = function()
-	game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, game.JobId, Steak.lp())
+Steak.rejoinServer = function(retryUntilSuccess)
+	if retryUntilSuccess then
+		TeleportService.TeleportInitFailed:Connect(function()
+			TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, Steak.player())
+		end)
+	end
+	TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, Steak.player())
+end
+
+Steak.rejoinGame = function(retryUntilSuccess)
+		if retryUntilSuccess then
+		TeleportService.TeleportInitFailed:Connect(function()
+			TeleportService:Teleport(game.PlaceId)
+		end)
+	end
+	TeleportService:Teleport(game.PlaceId)
+end
+
+Steak.serverhop = function()
+	
 end
 
 Steak.dumpTable = function(_t)
@@ -432,19 +433,15 @@ Steak.isTimerFinished = function(timerName)
 	end
 end
 
-Steak.Obj = function(...)
-	local objects = {...}
-	local waitTimeout
-	local obj = objects[2]
-	table.remove(objects, 1)
-
-	for i,v in objects do
-		
-	end
+Steak.listen = function(listenerName, event, listenerFunction)
+	Steak.unlisten(listenerName)
+	Steak.listeners[listenerName] = event:Connect(listenerFunction)
 end
 
-if getgenv then
-	getgenv().Steak = Steak
+Steak.unlisten = function(listenerName)
+	if Steak.listeners[listenerName] then
+		Steak.listeners[listenerName]:Disconnect()
+	end
 end
 
 if Steak.reload then
