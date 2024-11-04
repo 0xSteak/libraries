@@ -229,14 +229,16 @@ end
 
 -- just teleport function
 Steak.tp = function(x, y, z)
+	local rootPart = Steak.rootPart()
+	if not rootPart then return end
 	if typeof(x) == "number" then
-		Steak.hrp().CFrame = CFrame.new(x, y, z)
+		rootPart.CFrame = CFrame.new(x, y, z)
 	elseif typeof(x) == "Instance" and Steak.hasProp(x, "Position") then
-		Steak.hrp().CFrame = CFrame.new(x.Position)
+		rootPart.CFrame = CFrame.new(x.Position)
 	elseif typeof(x) == "Vector3" then
-		Steak.hrp().CFrame = CFrame.new(x)
+		rootPart.CFrame = CFrame.new(x)
 	elseif typeof(x) == "CFrame" then
-		Steak.hrp().CFrame = x
+		rootPart.CFrame = x
 	end
 end
 
