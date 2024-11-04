@@ -250,7 +250,7 @@ end
 
 -- tweens ur character (smooth/interpolated teleport)
 Steak.tweenCharacter = function(position, tweenTime, easingStyle, easingDirection)
-	Steak.tween = TweenService:Create(Steak.hrp(), TweenInfo.new(tweenTime, easingStyle or Enum.EasingStyle.Linear, easingDirection or Enum.EasingDirection.Out), {CFrame = position})
+	Steak.tween = TweenService:Create(Steak.rootPart(), TweenInfo.new(tweenTime, easingStyle or Enum.EasingStyle.Linear, easingDirection or Enum.EasingDirection.Out), {CFrame = position})
 	Steak.tween:Play()
 end
 
