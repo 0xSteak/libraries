@@ -478,12 +478,16 @@ Steak.unlisten = function(listenerName)
 	end
 end
 
-if Steak.reloaded then
-	print("Steak Utilities reloaded")
-else
-	print("Steak Utilities loaded")
-end
+-- if Steak.reloaded then
+-- 	print("Steak Utilities reloaded")
+-- else
+-- 	print("Steak Utilities loaded")
+-- end
 
 globalTable.steakloaded = true
+
+if typeof(getgenv) == "function" and typeof(getgenv()) == "table" then
+	getgenv().Steak = Steak
+end
 
 return Steak
