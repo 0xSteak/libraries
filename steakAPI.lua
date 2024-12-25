@@ -1,14 +1,14 @@
--- no documentation buddy
+-- no documentation.
 -- made by 0xsteak
 
 local globalTable = getgenv and getgenv() or _G
 
 Steak = {
-	_version = "v1.01",
-	reload = globalTable.steakloaded,
+	reloaded = globalTable.steakloaded,
 	floating = false,
 	timers = {},
 	listeners = {},
+	threads = {},
 	tween = nil
 }
 
@@ -27,8 +27,6 @@ Steak.player = function(player)
 			return Players:GetPlayerFromCharacter(player)
 		elseif typeof(player) == "string" then
 			return Players:FindFirstChild(player)
-		else
-			return "💀" -- bro wtf did u give me
 		end
 	else
 		return Players.LocalPlayer
@@ -81,7 +79,8 @@ Steak.create = function(class, props)
 	return instance
 end
 
--- formatting time to string
+-- format time to string
+-- zeroText is text to return if timenum is 0
 Steak.timeToString = function(timenum, zeroText)
 	local days = math.floor(timenum / 86400)
 	local hours = math.floor(timenum / 3600 - days * 24)
@@ -133,14 +132,42 @@ Steak.timeToString = function(timenum, zeroText)
 end
 
 -- random string generator
-Steak.randomString = function(length, letters, numbers, symbols, lowcase, upcase)
-	local lowcase = lowcase == false and "" or "abcdefghijklmnopqrstuvwxyz"
-	local upcase = upcase == false and "" or "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	local letters = letters and lowcase..upcase or ""
-	local numbers = numbers and "1234567890" or ""
-	local symbols = symbols and "!#$%^&*(){}[]|/<>.?" or ""
-	local charSet = numbers..symbols..letters
+Steak.randomString = function(length, options)
+	local chars = {
+		lowcase = "abcdefghijklmnopqrstuvwxyz",
+		upcase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+		digits = "1234567890",
+		symbols = "!#$%^&*(){}[]|/<>.?"
+	}
+
+	local userOptions = options or {}
+
+	options = {
+		lowcase = userOptions.lowcase or true,
+		upcase = userOptions.upcase or true,
+		digits = userOptions.digits or true,
+		symbols = userOptions.symbols or false,
+		customChars = userOptions.customChars or ""
+	}
+
+	local charSet = ""
 	local generated
+
+	if options.lowcase then
+		charSet ..= chars.lowcase
+	end
+	if options.upcase then
+		charSet ..= chars.upcase
+	end
+	if options.digits then
+		charSet ..= chars.digits
+	end
+	if options.symbols then
+		charSet ..= chars.symbols
+	end
+	if options.customChars and #options.customChars > 0 then
+		charSet ..= options.customChars
+	end
 
 	if #charSet == 0 then  -- bro trynna generate string with empty char set
 		return 
@@ -355,10 +382,15 @@ Steak.UI = function()
 	return loadstring(game:HttpGet("https://raw.githubusercontent.com/0xSteak/libraries/refs/heads/main/sapphireUI.lua"))()
 end
 
-Steak.newThread = function(func)
-    local a = coroutine.create(func)
-	coroutine.resume(a)
-	return a
+Steak.newThread = function(threadName, threadFunction, ...)
+	if Steak.threads[threadName] then
+		Steak.stopThread(threadName)
+	end
+	Steak.threads[threadName] = task.spawn(threadFunction, ...)
+end
+
+Steak.stopThread = function(threadName)
+	task.cancel(Steak.threads[threadName])
 end
 
 Steak.tableFromIndexes = function(t)
@@ -379,7 +411,7 @@ Steak.rejoinServer = function(retryUntilSuccess)
 end
 
 Steak.rejoinGame = function(retryUntilSuccess)
-		if retryUntilSuccess then
+	if retryUntilSuccess then
 		TeleportService.TeleportInitFailed:Connect(function()
 			TeleportService:Teleport(game.PlaceId)
 		end)
@@ -387,8 +419,8 @@ Steak.rejoinGame = function(retryUntilSuccess)
 	TeleportService:Teleport(game.PlaceId)
 end
 
-Steak.serverhop = function()
-	
+Steak.serverhop = function(placeId)
+	local url = ("https://games.roblox.com/v1/games/%s/servers/0/?excludeFullGames=true&limit=100&cursor="):format(placeId or game.PlaceId)
 end
 
 Steak.dumpTable = function(_t)
@@ -446,10 +478,10 @@ Steak.unlisten = function(listenerName)
 	end
 end
 
-if Steak.reload then
-	print(("Steak API %s reloaded"):format(Steak._version))
+if Steak.reloaded then
+	print("Steak Utilities reloaded")
 else
-	print(("Steak API %s loaded"):format(Steak._version))
+	print("Steak Utilities loaded")
 end
 
 globalTable.steakloaded = true
