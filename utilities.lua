@@ -326,22 +326,22 @@ Steak.round = function(num, numDecimalPlaces)
 	return math.floor(num * mult + 0.5) / mult
 end
 
--- old shit, im lazy to rewrite it
---[[Steak.float = function()
+Steak.float = function()
 	if not Steak.floatPart then
 		Steak.floatPart = Steak.create("Part", {
 			CanCollide = false,
 			Anchored = true,
 			Transparency = 1,
 			Name = Steak.randomString(10),
-			Parent = Steak.ws(),
+			Parent = workspace,
 			Size = Vector3.new(3, 1, 3)
 		})
 	end
 	local floatpart = Steak.floatPart
-	local pos = CFrame.new(Steak.hrp().Position.X, Steak.hrp().Position.Y - 3.75, Steak.hrp().Position.Z)
+	local rootPart = Steak.rootPart()
+	local pos = CFrame.new(rootPart.Position.X, rootPart.Position.Y - 3.75, rootPart.Position.Z)
 
-	Steak.hmnd().HumanoidDescription.BodyTypeScale = 0
+	Steak.humanoid().HumanoidDescription.BodyTypeScale = 0
 
 	floatpart.CFrame = pos
 	floatpart.CanCollide = true
@@ -355,7 +355,7 @@ Steak.disableFloat = function()
 		floatpart.CanCollide = false
 		Steak.floating = false
 	end
-end]]
+end
 
 -- discord webhook
 Steak.webhook = function(webhook, data)
