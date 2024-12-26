@@ -20,6 +20,7 @@ local lib = {
 local ts = game:GetService('TweenService')
 local uis = game:GetService('UserInputService')
 local rs = game:GetService('RunService')
+local textService = game:GetService("TextService")
 
 table.insert(lib.connections, uis.InputBegan:Connect(function(input)
 	if input.KeyCode == Enum.KeyCode.LeftControl then
@@ -1619,7 +1620,7 @@ lib.new = function(config)
 				label.Text = labelText
 				label.TextXAlignment = labelAlignment == 0 and Enum.TextXAlignment.Left or labelAlignment == 1 and Enum.TextXAlignment.Center or labelAlignment == 2 and Enum.TextXAlignment.Right or Enum.TextXAlignment.Center
 
-				label.Size = UDim2.new(0, 170, 0, label.TextBounds.Y + 8)
+				label.Size = UDim2.new(0, 170, 0, textService:GetTextSize(labelText, 12, Enum.Font.Ubuntu, Vector2.new(label.AbsoluteSize.X, 99999)))
 
 				insert_texts(label)
 
@@ -2717,7 +2718,7 @@ lib.new = function(config)
 					object.Text = objectName
 
 					object.Button.MouseButton1Click:Connect(function()
-						if removeCallback(v) then
+						if removeCallback(objectName) then
 							table.remove(currentVal, table.find(currentVal, objectName))
 							List.Toggle.Value.Text = #currentVal.." "..objectsName
 							object:Destroy()
