@@ -269,11 +269,14 @@ Steak.tp = function(x, y, z)
 	end
 end
 
--- makes ur character to walk to given position
-Steak.walkTo = function(position)
+-- makes ur character to walk to given target
+Steak.walkTo = function(target)
+	if typeof(target) == "Instance" then
+		target = target.Position
+	end
 	local humanoid = Steak.humanoid()
 	if humanoid then
-		humanoid:MoveTo(position)
+		humanoid:MoveTo(target)
 	end
 end
 
