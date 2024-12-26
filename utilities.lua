@@ -151,7 +151,7 @@ Steak.randomString = function(length, options)
 	}
 
 	local charSet = ""
-	local generated
+	local generated = ""
 
 	if options.lowcase then
 		charSet ..= chars.lowcase
