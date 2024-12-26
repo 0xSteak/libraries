@@ -275,7 +275,7 @@ Steak.walkTo = function(target)
 		target = target.Position
 	end
 	local humanoid = Steak.humanoid()
-	if humanoid then
+	if humanoid and typeof(target) == "Vector3" then
 		humanoid:MoveTo(target)
 	end
 end
