@@ -478,6 +478,42 @@ Steak.unlisten = function(listenerName)
 	end
 end
 
+Steak.fireSignal = function(signal, ...)
+	if typeof(firesignal) == "function" then
+		firesignal(signal)
+	elseif typeof(getconnections) == "function" then
+		for _, connection in pairs(getconnections(signal)) do
+			connection:Fire()
+		end
+	end
+end
+
+Steak.guiClick = function(object, button, clickType)
+	clickType = clickType or 5
+
+	local down = "MouseButton"..button.."Down"
+	local up = "MouseButton"..button.."Up"
+	local click = "MouseButton"..button.."Click"
+
+	if clickType == 1 then
+		Steak.fireSignal(object[down])
+	elseif clickType == 2 then
+		Steak.fireSignal(object[up])
+	elseif clickType == 3 then
+		Steak.fireSignal(object[click])
+	elseif clickType == 4 then
+		Steak.fireSignal(object[down])
+		task.wait(0.1)
+		Steak.fireSignal(object[up])
+	elseif clickType == 5 then
+		Steak.fireSignal(object[down])
+		task.wait(0.1)
+		Steak.fireSignal(object[up])
+		task.wait(0.1)
+		Steak.fireSignal(object[click])
+	end
+end
+
 -- if Steak.reloaded then
 -- 	print("Steak Utilities reloaded")
 -- else
