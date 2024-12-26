@@ -1620,7 +1620,7 @@ lib.new = function(config)
 				label.Text = labelText
 				label.TextXAlignment = labelAlignment == 0 and Enum.TextXAlignment.Left or labelAlignment == 1 and Enum.TextXAlignment.Center or labelAlignment == 2 and Enum.TextXAlignment.Right or Enum.TextXAlignment.Center
 
-				label.Size = UDim2.new(0, 170, 0, textService:GetTextSize(labelText, 12, Enum.Font.Ubuntu, Vector2.new(label.AbsoluteSize.X, 99999)))
+				label.Size = UDim2.new(0, 170, 0, textService:GetTextSize(labelText, 12, Enum.Font.Ubuntu, Vector2.new(170, 99999)).Y)
 
 				insert_texts(label)
 
