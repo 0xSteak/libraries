@@ -1638,7 +1638,9 @@ lib.new = function(config)
 					if prop == 1 then
 						label.TextXAlignment = val == 0 and Enum.TextXAlignment.Left or val == 1 and Enum.TextXAlignment.Center or val == 2 and Enum.TextXAlignment.Right
 					else
-						label.Text = #val > 26 and val:sub(1, 26).."..." or val
+						label.Text = labelText
+						label.Size = UDim2.new(0, 170, 0, textService:GetTextSize(labelText, 12, Enum.Font.Ubuntu, Vector2.new(170, 99999)).Y)
+						--[[label.Text = #val > 26 and val:sub(1, 26).."..." or val
 						if #val > 26 then
 							if labelTooltip then
 								labelTooltip()
@@ -1648,7 +1650,7 @@ lib.new = function(config)
 							if labelTooltip then
 								labelTooltip()
 							end
-						end
+						end]]
 					end
 				end
 
