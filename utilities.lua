@@ -396,10 +396,9 @@ Steak.stopThread = function(threadName)
 	task.cancel(Steak.threads[threadName])
 end
 
-Steak.arrayFromKeys = function(t, _ipairs)
+Steak.arrayFromKeys = function(t)
 	local result = {}
-	local iter = _ipairs and ipairs(t) or pairs(t)
-	for i,v in iter do
+	for i,v in pairs(t) do
 		table.insert(result, i)
 	end
 	return result
