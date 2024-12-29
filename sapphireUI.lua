@@ -2213,6 +2213,7 @@ lib.new = function(config)
 
 					elseif prop == 3 then
 						textField.Field.Text = val
+						fieldCallback(val)
 					end
 				end
 
